@@ -1,68 +1,94 @@
 @extends('layouts.app')
 
-@section('title', 'Create Warehouse')
+@section('title', 'Tambah Data Kantor Cabang Baru')
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    function toggleParent() {
+        if ($('#tipe').val() === 'Kantor Cabang') {
+            $('#parent-row').show();
+        } else {
+            $('#parent-row').hide();
+            $('#parent_id').val('');
+        }
+    }
+    toggleParent();
+    $('#tipe').on('change', toggleParent);
+});
+</script>
+@endpush
 
 @section('content')
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white py-3">
-        <h5 class="fw-bold mb-0">Create New Warehouse</h5>
+        <h5 class="fw-bold mb-0">TAMBAH DATA KANTOR CABANG BARU</h5>
     </div>
     <div class="card-body">
         <form method="POST" action="{{ route('warehouses.store') }}">
             @csrf
+            @if($selectedParent)
+            <input type="hidden" name="parent_id" value="{{ $selectedParent->id }}">
+            <input type="hidden" name="tipe" value="Kantor Cabang">
+            @endif
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label for="kode_gudang" class="form-label">Kode Gudang <span class="text-danger">*</span></label>
+                    <label for="kode_gudang" class="form-label">Kode Kantor Cabang <span class="text-danger">*</span></label>
                     <input type="text" class="form-control @error('kode_gudang') is-invalid @enderror" id="kode_gudang" name="kode_gudang" value="{{ old('kode_gudang') }}" required>
                     @error('kode_gudang') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-6">
-                    <label for="nama_gudang" class="form-label">Nama Gudang <span class="text-danger">*</span></label>
+                    <label for="nama_gudang" class="form-label">Nama Kantor Cabang <span class="text-danger">*</span></label>
                     <input type="text" class="form-control @error('nama_gudang') is-invalid @enderror" id="nama_gudang" name="nama_gudang" value="{{ old('nama_gudang') }}" required>
                     @error('nama_gudang') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
+            @if(!$selectedParent)
             <div class="row g-3 mt-2">
-                <div class="col-md-4">
-                    <label for="kota" class="form-label">Kota</label>
-                    <input type="text" class="form-control @error('kota') is-invalid @enderror" id="kota" name="kota" value="{{ old('kota') }}">
-                    @error('kota') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <div class="col-md-6">
+                    <label for="tipe" class="form-label">Tipe <span class="text-danger">*</span></label>
+                    <select class="form-select @error('tipe') is-invalid @enderror" id="tipe" name="tipe" required>
+                        <option value="">-- Pilih Tipe --</option>
+                        <option value="Kantor Pusat" {{ old('tipe') == 'Kantor Pusat' ? 'selected' : '' }}>Kantor Pusat</option>
+                        <option value="Kantor Cabang" {{ old('tipe') == 'Kantor Cabang' ? 'selected' : '' }}>Kantor Cabang</option>
+                    </select>
+                    @error('tipe') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
-                <div class="col-md-4">
-                    <label for="provinsi" class="form-label">Provinsi</label>
-                    <input type="text" class="form-control @error('provinsi') is-invalid @enderror" id="provinsi" name="provinsi" value="{{ old('provinsi') }}">
-                    @error('provinsi') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                </div>
-                <div class="col-md-4">
-                    <label for="telepon" class="form-label">Telepon</label>
-                    <input type="text" class="form-control @error('telepon') is-invalid @enderror" id="telepon" name="telepon" value="{{ old('telepon') }}">
-                    @error('telepon') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <div class="col-md-6" id="parent-row" style="display:none">
+                    <label for="parent_id" class="form-label">Induk</label>
+                    <select class="form-select @error('parent_id') is-invalid @enderror" id="parent_id" name="parent_id">
+                        <option value="">-- Pilih Induk --</option>
+                        @foreach($parentWarehouses as $p)
+                        <option value="{{ $p->id }}" {{ old('parent_id') == $p->id ? 'selected' : '' }}>{{ $p->kode_gudang }} - {{ $p->nama_gudang }}</option>
+                        @endforeach
+                    </select>
+                    @error('parent_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
+            @else
             <div class="row g-3 mt-2">
                 <div class="col-md-6">
-                    <label for="penanggung_jawab" class="form-label">Penanggung Jawab</label>
-                    <input type="text" class="form-control @error('penanggung_jawab') is-invalid @enderror" id="penanggung_jawab" name="penanggung_jawab" value="{{ old('penanggung_jawab') }}">
-                    @error('penanggung_jawab') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label class="form-label">Induk</label>
+                    <input type="text" class="form-control" value="{{ $selectedParent->kode_gudang }} - {{ $selectedParent->nama_gudang }}" readonly>
                 </div>
                 <div class="col-md-6">
-                    <label for="status" class="form-label">Status</label>
-                    <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
-                        <option value="Aktif" {{ old('status', 'Aktif') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                        <option value="Tidak Aktif" {{ old('status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
-                    </select>
-                    @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label class="form-label">Tipe</label>
+                    <input type="text" class="form-control" value="Kantor Cabang" readonly>
                 </div>
+            </div>
+            @endif
+            <div class="mt-3">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
+                    <option value="Aktif" {{ old('status', 'Aktif') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                    <option value="Tidak Aktif" {{ old('status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                </select>
+                @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             <div class="mt-3">
                 <label for="alamat" class="form-label">Alamat</label>
                 <textarea class="form-control @error('alamat') is-invalid @enderror" id="alamat" name="alamat" rows="3">{{ old('alamat') }}</textarea>
                 @error('alamat') <div class="invalid-feedback">{{ $message }}</div> @enderror
-            </div>
-            <div class="mt-3">
-                <label for="keterangan" class="form-label">Keterangan</label>
-                <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan" rows="2">{{ old('keterangan') }}</textarea>
-                @error('keterangan') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             <div class="mt-4 d-flex gap-2">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Save</button>

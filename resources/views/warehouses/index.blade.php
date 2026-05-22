@@ -11,7 +11,7 @@ $(document).ready(function() {
         var form = $(this).closest('form');
         Swal.fire({
             title: 'Konfirmasi Hapus',
-            text: 'Apakah Anda yakin ingin menghapus gudang ini?',
+            text: 'Apakah Anda yakin ingin menghapus data ini?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc3545',
@@ -22,6 +22,12 @@ $(document).ready(function() {
             if (result.isConfirmed) form.submit();
         });
     });
+
+    $('.toggle-children').on('click', function() {
+        var cls = $(this).data('toggle');
+        $('.' + cls).toggle();
+        $(this).find('i.bi-chevron-down, i.bi-chevron-up').toggleClass('bi-chevron-down bi-chevron-up');
+    });
 });
 </script>
 @endpush
@@ -31,7 +37,7 @@ $(document).ready(function() {
     <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
         <h5 class="fw-bold mb-0">Warehouses / Gudang</h5>
         @can('warehouse.manage')
-        <a href="{{ route('warehouses.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Add Warehouse</a>
+        <a href="{{ route('warehouses.create') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Tambah Data Kantor Cabang Baru</a>
         @endcan
     </div>
     <div class="card-body">
@@ -39,23 +45,26 @@ $(document).ready(function() {
             <table class="table table-hover table-striped align-middle">
                 <thead class="table-dark">
                     <tr>
-                        <th>Kode Gudang</th>
-                        <th>Nama Gudang</th>
-                        <th>Kota</th>
-                        <th>Penanggung Jawab</th>
-                        <th>Telepon</th>
+                        <th style="width:32px"></th>
+                        <th>Parent</th>
+                        <th>Kode Lokasi Gudang</th>
+                        <th>Nama Lokasi Gudang</th>
+                        <th>Tipe</th>
+                        <th>Alamat</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($warehouses as $w)
-                    <tr>
+                    @php $hasChildren = $w->children->isNotEmpty(); @endphp
+                    <tr class="table-primary {{ $hasChildren ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $w->id }}" style="{{ $hasChildren ? 'cursor:pointer' : '' }}">
+                        <td>@if($hasChildren)<i class="bi bi-chevron-down"></i>@endif</td>
+                        <td class="fw-bold">-</td>
                         <td class="fw-medium">{{ $w->kode_gudang }}</td>
                         <td>{{ $w->nama_gudang }}</td>
-                        <td>{{ $w->kota ?? '-' }}</td>
-                        <td>{{ $w->penanggung_jawab ?? '-' }}</td>
-                        <td>{{ $w->telepon ?? '-' }}</td>
+                        <td><span class="badge bg-primary">{{ $w->tipe }}</span></td>
+                        <td>{{ $w->alamat ?? '-' }}</td>
                         <td>
                             <span class="badge bg-{{ $w->status == 'Aktif' ? 'success' : 'secondary' }}">{{ $w->status }}</span>
                         </td>
@@ -71,8 +80,82 @@ $(document).ready(function() {
                             </div>
                         </td>
                     </tr>
+                    @foreach($w->children as $c1)
+                    @php $hasChildren1 = $c1->children->isNotEmpty(); @endphp
+                    <tr class="child-of-{{ $w->id }} {{ $hasChildren1 ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $c1->id }}" style="{{ $hasChildren1 ? 'cursor:pointer' : '' }}">
+                        <td>@if($hasChildren1)<i class="bi bi-chevron-down"></i>@endif</td>
+                        <td class="text-muted">{{ $w->nama_gudang }}</td>
+                        <td class="ps-4 text-muted">{{ $c1->kode_gudang }}</td>
+                        <td class="ps-4 text-muted">{{ $c1->nama_gudang }}</td>
+                        <td><span class="badge bg-info">{{ $c1->tipe }}</span></td>
+                        <td>-</td>
+                        <td>
+                            <span class="badge bg-{{ $c1->status == 'Aktif' ? 'success' : 'secondary' }}">{{ $c1->status }}</span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                @can('warehouse.manage')
+                                <a href="{{ route('warehouses.edit', $c1) }}" class="btn btn-sm btn-warning text-white" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <form action="{{ route('warehouses.destroy', $c1) }}" method="POST">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete"><i class="bi bi-trash"></i></button>
+                                </form>
+                                @endcan
+                            </div>
+                        </td>
+                    </tr>
+                    @foreach($c1->children as $c2)
+                    @php $hasChildren2 = $c2->children->isNotEmpty(); @endphp
+                    <tr class="child-of-{{ $c1->id }} {{ $hasChildren2 ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $c2->id }}" style="{{ $hasChildren2 ? 'cursor:pointer' : '' }}">
+                        <td>@if($hasChildren2)<i class="bi bi-chevron-down"></i>@endif</td>
+                        <td class="text-muted">{{ $c1->nama_gudang }}</td>
+                        <td class="ps-5 text-muted">{{ $c2->kode_gudang }}</td>
+                        <td class="ps-5 text-muted">{{ $c2->nama_gudang }}</td>
+                        <td><span class="badge bg-secondary">{{ $c2->tipe }}</span></td>
+                        <td>-</td>
+                        <td>
+                            <span class="badge bg-{{ $c2->status == 'Aktif' ? 'success' : 'secondary' }}">{{ $c2->status }}</span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                @can('warehouse.manage')
+                                <a href="{{ route('warehouses.edit', $c2) }}" class="btn btn-sm btn-warning text-white" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <form action="{{ route('warehouses.destroy', $c2) }}" method="POST">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete"><i class="bi bi-trash"></i></button>
+                                </form>
+                                @endcan
+                            </div>
+                        </td>
+                    </tr>
+                    @foreach($c2->children as $c3)
+                    <tr class="child-of-{{ $c2->id }}">
+                        <td></td>
+                        <td class="text-muted">{{ $c2->nama_gudang }}</td>
+                        <td class="ps-6 text-muted">{{ $c3->kode_gudang }}</td>
+                        <td class="ps-6 text-muted">{{ $c3->nama_gudang }}</td>
+                        <td><span class="badge bg-secondary">{{ $c3->tipe }}</span></td>
+                        <td>-</td>
+                        <td>
+                            <span class="badge bg-{{ $c3->status == 'Aktif' ? 'success' : 'secondary' }}">{{ $c3->status }}</span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                @can('warehouse.manage')
+                                <a href="{{ route('warehouses.edit', $c3) }}" class="btn btn-sm btn-warning text-white" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <form action="{{ route('warehouses.destroy', $c3) }}" method="POST">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete"><i class="bi bi-trash"></i></button>
+                                </form>
+                                @endcan
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                    @endforeach
+                    @endforeach
                     @empty
-                    <tr><td colspan="7" class="text-center py-4 text-muted">No warehouses found.</td></tr>
+                    <tr><td colspan="8" class="text-center py-4 text-muted">No data found.</td></tr>
                     @endforelse
                 </tbody>
             </table>

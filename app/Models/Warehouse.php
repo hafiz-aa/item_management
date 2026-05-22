@@ -10,14 +10,11 @@ class Warehouse extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'parent_id',
         'kode_gudang',
         'nama_gudang',
+        'tipe',
         'alamat',
-        'kota',
-        'provinsi',
-        'telepon',
-        'penanggung_jawab',
-        'keterangan',
         'status',
         'created_by',
         'updated_by',
@@ -30,6 +27,16 @@ class Warehouse extends Model
             'updated_at' => 'datetime',
             'deleted_at' => 'datetime',
         ];
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(self::class, 'parent_id');
     }
 
     public function items()
@@ -55,5 +62,15 @@ class Warehouse extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 'Aktif');
+    }
+
+    public function scopePusat($query)
+    {
+        return $query->where('tipe', 'Kantor Pusat');
+    }
+
+    public function scopeCabang($query)
+    {
+        return $query->where('tipe', 'Kantor Cabang');
     }
 }

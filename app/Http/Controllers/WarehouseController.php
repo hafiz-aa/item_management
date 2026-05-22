@@ -21,41 +21,72 @@ class WarehouseController extends Controller
 
     public function index(Request $request): View
     {
-        $warehouses = $this->warehouseService->getForUser($request->user());
+        $warehouses = $this->warehouseService->getForUser($request->user())
+            ->where('tipe', 'Kantor Pusat')
+            ->values()
+            ->load('children.children.children');
         return view('warehouses.index', compact('warehouses'));
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('warehouses.create');
+        $selectedParent = null;
+        if ($request->filled('parent_id')) {
+            $selectedParent = Warehouse::find($request->parent_id);
+        }
+
+        $parentWarehouses = Warehouse::active()->get();
+
+        return view('warehouses.create', compact('parentWarehouses', 'selectedParent'));
     }
 
     public function store(StoreWarehouseRequest $request): RedirectResponse
     {
-        $this->warehouseService->create($request->validated());
+        $warehouse = $this->warehouseService->create($request->validated());
+
+        if ($warehouse->parent_id) {
+            return redirect()->route('warehouses.edit', $warehouse->parent_id)
+                ->with('success', 'Data kantor cabang berhasil ditambahkan.');
+        }
 
         return redirect()->route('warehouses.index')
-            ->with('success', 'Gudang berhasil ditambahkan.');
+            ->with('success', 'Data kantor cabang berhasil ditambahkan.');
     }
 
     public function edit(Warehouse $warehouse): View
     {
-        return view('warehouses.edit', compact('warehouse'));
+        $warehouse->load('children.children');
+        $parentWarehouses = Warehouse::active()
+            ->where('id', '!=', $warehouse->id)
+            ->whereNotIn('id', $warehouse->children->pluck('id'))
+            ->get();
+        return view('warehouses.edit', compact('warehouse', 'parentWarehouses'));
     }
 
     public function update(UpdateWarehouseRequest $request, Warehouse $warehouse): RedirectResponse
     {
         $this->warehouseService->update($warehouse, $request->validated());
 
+        if ($warehouse->parent_id) {
+            return redirect()->route('warehouses.edit', $warehouse->parent_id)
+                ->with('success', 'Data kantor cabang berhasil diupdate.');
+        }
+
         return redirect()->route('warehouses.index')
-            ->with('success', 'Gudang berhasil diupdate.');
+            ->with('success', 'Data kantor cabang berhasil diupdate.');
     }
 
     public function destroy(Warehouse $warehouse): RedirectResponse
     {
+        $parentId = $warehouse->parent_id;
         $this->warehouseService->delete($warehouse);
 
+        if ($parentId) {
+            return redirect()->route('warehouses.edit', $parentId)
+                ->with('success', 'Data kantor cabang berhasil dihapus.');
+        }
+
         return redirect()->route('warehouses.index')
-            ->with('success', 'Gudang berhasil dihapus.');
+            ->with('success', 'Data kantor cabang berhasil dihapus.');
     }
 }
