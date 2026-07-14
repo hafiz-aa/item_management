@@ -43,6 +43,32 @@
             tooltipTriggerList.forEach(function(el) {
                 new bootstrap.Tooltip(el);
             });
+
+            var sidebar = document.querySelector('.sidebar');
+            var sidebarToggle = document.getElementById('sidebarToggle');
+            var STORAGE_KEY = 'sidebar_collapsed';
+
+            if (localStorage.getItem(STORAGE_KEY) === 'true') {
+                sidebar.classList.add('collapsed');
+            }
+
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    localStorage.setItem(STORAGE_KEY, sidebar.classList.contains('collapsed'));
+
+                    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+                        var tooltip = bootstrap.Tooltip.getInstance(el);
+                        if (tooltip) {
+                            if (sidebar.classList.contains('collapsed')) {
+                                tooltip.enable();
+                            } else {
+                                tooltip.disable();
+                            }
+                        }
+                    });
+                });
+            }
         });
     </script>
 </body>
