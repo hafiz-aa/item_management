@@ -28,7 +28,7 @@ $(document).ready(function() {
         <form method="POST" action="{{ route('warehouses.store') }}">
             @csrf
             @if($selectedParent)
-            <input type="hidden" name="parent_id" value="{{ $selectedParent->id }}">
+            <input type="hidden" name="parent_id" value="{{ $selectedParent->warehouse_id }}">
             <input type="hidden" name="tipe" value="Kantor Cabang">
             @endif
             <div class="row g-3">
@@ -59,7 +59,7 @@ $(document).ready(function() {
                     <select class="form-select @error('parent_id') is-invalid @enderror" id="parent_id" name="parent_id">
                         <option value="">-- Pilih Induk --</option>
                         @foreach($parentWarehouses as $p)
-                        <option value="{{ $p->id }}" {{ old('parent_id') == $p->id ? 'selected' : '' }}>{{ $p->kode_gudang }} - {{ $p->nama_gudang }}</option>
+                        <option value="{{ $p->warehouse_id }}" {{ old('parent_id') == $p->warehouse_id ? 'selected' : '' }}>{{ $p->kode_gudang }} - {{ $p->nama_gudang }}</option>
                         @endforeach
                     </select>
                     @error('parent_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -77,13 +77,25 @@ $(document).ready(function() {
                 </div>
             </div>
             @endif
-            <div class="mt-3">
-                <label for="status" class="form-label">Status</label>
-                <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
-                    <option value="Aktif" {{ old('status', 'Aktif') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                    <option value="Tidak Aktif" {{ old('status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
-                </select>
-                @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                    <label for="branch_id" class="form-label">Branch</label>
+                    <select class="form-select @error('branch_id') is-invalid @enderror" id="branch_id" name="branch_id">
+                        <option value="">-- Pilih Branch --</option>
+                        @foreach($branches as $b)
+                        <option value="{{ $b->branch_id }}" {{ old('branch_id') == $b->branch_id ? 'selected' : '' }}>{{ $b->branch_code }} - {{ $b->branch_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('branch_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+                <div class="col-md-6">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
+                        <option value="Aktif" {{ old('status', 'Aktif') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                        <option value="Tidak Aktif" {{ old('status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                    </select>
+                    @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
             </div>
             <div class="mt-3">
                 <label for="alamat" class="form-label">Alamat</label>

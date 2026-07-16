@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Imports\ItemsImport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ImportController extends Controller
 {
-    public function create(): \Illuminate\View\View
+    public function create(): View
     {
         return view('import.create');
     }
@@ -20,7 +21,7 @@ class ImportController extends Controller
             'file' => 'required|mimes:xlsx,xls,csv|max:10240',
         ]);
 
-        $import = new ItemsImport();
+        $import = new ItemsImport;
         Excel::import($import, $request->file('file'));
 
         $result = $import->getResult();
@@ -35,7 +36,7 @@ class ImportController extends Controller
             ->with('success', "{$result['success']} item berhasil diimport.");
     }
 
-    public function result(): \Illuminate\View\View
+    public function result(): View
     {
         return view('import.result');
     }

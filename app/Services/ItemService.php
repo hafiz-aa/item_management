@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\Item;
-use App\Repositories\ItemRepository;
+use App\Models\ItemDetail;
+use App\Models\ItemHeader;
 use App\Repositories\ActivityLogRepository;
+use App\Repositories\ItemRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ItemService extends BaseService
 {
@@ -23,59 +25,123 @@ class ItemService extends BaseService
         return $this->repository->search($filters);
     }
 
-    public function findById(int $id): Item
+    public function findById(int $id): ItemHeader
     {
         return $this->repository->findById($id);
     }
 
-    public function create(array $data): Item
+    public function create(array $data): ItemHeader
     {
-        $data['created_by'] = Auth::id();
-        $item = $this->repository->create($data);
+        return DB::transaction(function () use ($data) {
+            $headerData = [
+                'company_id' => $data['company_id'] ?? null,
+                'item_code' => $data['item_code'],
+                'item_name' => $data['item_name'] ?? null,
+                'capacity' => $data['capacity'] ?? 0,
+                'uom_id_1' => $data['uom_id_1'] ?? 'Kg',
+                'uom_id_2' => $data['uom_id_2'] ?? null,
+                'cat_id' => $data['cat_id'] ?? null,
+                'created_by' => Auth::id(),
+            ];
 
-        $this->logRepo->log(
-            Auth::id(),
-            'item_created',
-            "Membuat tabung baru: {$item->kode_tabung}",
-            Item::class,
-            $item->id,
-            $item->toArray()
-        );
+            $header = $this->repository->create($headerData);
 
-        return $item;
+            $detailData = [
+                'itemh_id' => $header->itemh_id,
+                'company_id' => $data['company_id'] ?? null,
+                'branch_id' => $data['branch_id'] ?? null,
+                'whsl_id' => $data['whsl_id'] ?? null,
+                'acquired_date' => $data['acquired_date'] ?? null,
+                'itemd_code' => $data['itemd_code'] ?? null,
+                'qty' => $data['qty'] ?? 1,
+                'status' => $data['status'] ?? 'Aktif',
+                'position_id' => $data['position_id'] ?? null,
+                'is_broken' => $data['is_broken'] ?? false,
+                'is_dispossed' => $data['is_dispossed'] ?? false,
+                'is_writeoff' => $data['is_writeoff'] ?? false,
+                'warehouse_id' => $data['warehouse_id'] ?? null,
+                'original_branch_id' => $data['original_branch_id'] ?? null,
+                'created_by' => Auth::id(),
+            ];
+
+            ItemDetail::create($detailData);
+
+            $this->logRepo->log(
+                Auth::id(),
+                'item_created',
+                "Membuat item baru: {$header->item_code}",
+                ItemHeader::class,
+                $header->itemh_id,
+                $header->toArray()
+            );
+
+            return $header;
+        });
     }
 
-    public function update(Item $item, array $data): bool
+    public function update(ItemHeader $header, array $data): bool
     {
-        $data['updated_by'] = Auth::id();
-        $updated = $this->repository->update($item, $data);
+        return DB::transaction(function () use ($header, $data) {
+            $headerData = array_filter([
+                'company_id' => $data['company_id'] ?? null,
+                'item_code' => $data['item_code'] ?? null,
+                'item_name' => $data['item_name'] ?? null,
+                'capacity' => $data['capacity'] ?? null,
+                'uom_id_1' => $data['uom_id_1'] ?? null,
+                'uom_id_2' => $data['uom_id_2'] ?? null,
+                'cat_id' => $data['cat_id'] ?? null,
+                'updated_by' => Auth::id(),
+            ], fn ($v) => $v !== null);
 
-        if ($updated) {
+            $header->update($headerData);
+
+            $detail = $header->details()->first();
+            if ($detail) {
+                $detailData = array_filter([
+                    'company_id' => $data['company_id'] ?? null,
+                    'branch_id' => $data['branch_id'] ?? null,
+                    'whsl_id' => $data['whsl_id'] ?? null,
+                    'acquired_date' => $data['acquired_date'] ?? null,
+                    'itemd_code' => $data['itemd_code'] ?? null,
+                    'qty' => $data['qty'] ?? null,
+                    'status' => $data['status'] ?? null,
+                    'position_id' => $data['position_id'] ?? null,
+                    'is_broken' => $data['is_broken'] ?? null,
+                    'is_dispossed' => $data['is_dispossed'] ?? null,
+                    'is_writeoff' => $data['is_writeoff'] ?? null,
+                    'warehouse_id' => $data['warehouse_id'] ?? null,
+                    'original_branch_id' => $data['original_branch_id'] ?? null,
+                    'updated_by' => Auth::id(),
+                ], fn ($v) => $v !== null);
+
+                $detail->update($detailData);
+            }
+
             $this->logRepo->log(
                 Auth::id(),
                 'item_updated',
-                "Mengupdate tabung: {$item->kode_tabung}",
-                Item::class,
-                $item->id,
-                $item->fresh()->toArray()
+                "Mengupdate item: {$header->item_code}",
+                ItemHeader::class,
+                $header->itemh_id,
+                $header->fresh()->toArray()
             );
-        }
 
-        return $updated;
+            return true;
+        });
     }
 
-    public function delete(Item $item): bool
+    public function delete(ItemHeader $header): bool
     {
-        $kode = $item->kode_tabung;
-        $deleted = $this->repository->delete($item);
+        $code = $header->item_code;
+        $deleted = $this->repository->delete($header);
 
         if ($deleted) {
             $this->logRepo->log(
                 Auth::id(),
                 'item_deleted',
-                "Menghapus tabung: {$kode}",
-                Item::class,
-                $item->id
+                "Menghapus item: {$code}",
+                ItemHeader::class,
+                $header->itemh_id
             );
         }
 
@@ -90,20 +156,15 @@ class ItemService extends BaseService
             $this->logRepo->log(
                 Auth::id(),
                 'items_bulk_deleted',
-                "Menghapus {$deleted} tabung secara massal"
+                "Menghapus {$deleted} item secara massal"
             );
         }
 
         return $deleted;
     }
 
-    public function getKategoris(): array
+    public function getCatIds(): array
     {
-        return $this->repository->getKategoris();
-    }
-
-    public function getVendors(): array
-    {
-        return $this->repository->getVendors();
+        return $this->repository->getCatIds();
     }
 }

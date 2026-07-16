@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles, SoftDeletes;
+    use HasRoles, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -37,14 +37,24 @@ class User extends Authenticatable
         return $this->belongsToMany(Warehouse::class, 'user_warehouse');
     }
 
-    public function createdItems()
+    public function createdItemHeaders()
     {
-        return $this->hasMany(Item::class, 'created_by');
+        return $this->hasMany(ItemHeader::class, 'created_by');
     }
 
-    public function updatedItems()
+    public function updatedItemHeaders()
     {
-        return $this->hasMany(Item::class, 'updated_by');
+        return $this->hasMany(ItemHeader::class, 'updated_by');
+    }
+
+    public function createdItemDetails()
+    {
+        return $this->hasMany(ItemDetail::class, 'created_by');
+    }
+
+    public function updatedItemDetails()
+    {
+        return $this->hasMany(ItemDetail::class, 'updated_by');
     }
 
     public function createdWarehouses()

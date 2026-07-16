@@ -67,6 +67,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    var ctx4 = document.getElementById('branchChart');
+    if (ctx4) {
+        new Chart(ctx4.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($chartData['warehouses_per_branch']['labels'] ?? []) !!},
+                datasets: [{
+                    label: 'Warehouses',
+                    data: {!! json_encode($chartData['warehouses_per_branch']['data'] ?? []) !!},
+                    backgroundColor: '#6f42c1',
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
 });
 </script>
 @endpush
@@ -139,6 +160,19 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
     <div class="col-xl-2 col-md-4 col-6">
+        <div class="card border-0 shadow-sm bg-dark text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="card-title mb-0 fs-6 fw-light">Branches</h6>
+                        <h2 class="mt-2 mb-0 fw-bold">{{ number_format($stats['total_branches']) }}</h2>
+                    </div>
+                    <i class="bi bi-diagram-3 fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4 col-6">
         <div class="card border-0 shadow-sm bg-danger text-white h-100">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start">
@@ -154,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <div class="row g-3 mb-4">
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white border-bottom py-3">
                 <h6 class="fw-bold mb-0">Items by Warehouse</h6>
@@ -164,13 +198,23 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white border-bottom py-3">
                 <h6 class="fw-bold mb-0">Items by Category</h6>
             </div>
             <div class="card-body">
                 <canvas id="kategoriChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom py-3">
+                <h6 class="fw-bold mb-0">Warehouses per Branch</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="branchChart" height="250"></canvas>
             </div>
         </div>
     </div>

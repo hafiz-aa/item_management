@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Item;
-use App\Models\Warehouse;
-use App\Models\User;
 use App\Models\ActivityLog;
+use App\Models\Branch;
+use App\Models\ItemDetail;
+use App\Models\User;
+use App\Models\Warehouse;
 use App\Repositories\ItemRepository;
 use Illuminate\Support\Facades\Cache;
 
@@ -22,11 +23,12 @@ class DashboardService
     {
         return Cache::remember('dashboard_stats', 300, function () {
             return [
-                'total_items' => Item::count(),
+                'total_items' => $this->itemRepo->countTotal(),
                 'active_items' => $this->itemRepo->countByStatus('Aktif'),
-                'damaged_items' => $this->itemRepo->countRusak(),
-                'sold_items' => $this->itemRepo->countDijual(),
+                'damaged_items' => $this->itemRepo->countBroken(),
+                'sold_items' => $this->itemRepo->countDisposed(),
                 'total_warehouses' => Warehouse::count(),
+                'total_branches' => Branch::count(),
                 'total_users' => User::count(),
             ];
         });
@@ -38,6 +40,7 @@ class DashboardService
             'by_warehouse' => $this->getWarehouseChartData(),
             'by_kategori' => $this->getKategoriChartData(),
             'by_year' => $this->getYearChartData(),
+            'warehouses_per_branch' => $this->getWarehousesPerBranch(),
         ];
     }
 
@@ -68,11 +71,26 @@ class DashboardService
 
     private function getYearChartData(): array
     {
-        $yearCounts = $this->itemRepo->countByYear();
+        $yearCounts = ItemDetail::selectRaw('YEAR(acquired_date) as year, count(*) as total')
+            ->whereNotNull('acquired_date')
+            ->groupBy('year')
+            ->orderBy('year')
+            ->pluck('total', 'year')
+            ->toArray();
 
         return [
             'labels' => array_keys($yearCounts),
             'data' => array_values($yearCounts),
+        ];
+    }
+
+    private function getWarehousesPerBranch(): array
+    {
+        $branches = Branch::withCount('warehouses')->orderBy('branch_code')->get();
+
+        return [
+            'labels' => $branches->pluck('branch_code')->toArray(),
+            'data' => $branches->pluck('warehouses_count')->toArray(),
         ];
     }
 

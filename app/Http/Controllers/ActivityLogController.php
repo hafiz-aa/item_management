@@ -19,6 +19,7 @@ class ActivityLogController extends Controller
     {
         $filters = $request->only(['type', 'user_id', 'date_from', 'date_to', 'search']);
         $logs = $this->logRepo->search($filters);
+
         return view('activity-logs.index', compact('logs', 'filters'));
     }
 }

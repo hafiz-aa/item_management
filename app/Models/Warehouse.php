@@ -9,7 +9,10 @@ class Warehouse extends Model
 {
     use SoftDeletes;
 
+    protected $primaryKey = 'warehouse_id';
+
     protected $fillable = [
+        'branch_id',
         'parent_id',
         'kode_gudang',
         'nama_gudang',
@@ -31,17 +34,22 @@ class Warehouse extends Model
 
     public function parent()
     {
-        return $this->belongsTo(self::class, 'parent_id');
+        return $this->belongsTo(self::class, 'parent_id', 'warehouse_id');
     }
 
     public function children()
     {
-        return $this->hasMany(self::class, 'parent_id');
+        return $this->hasMany(self::class, 'parent_id', 'warehouse_id');
     }
 
-    public function items()
+    public function branch()
     {
-        return $this->hasMany(Item::class, 'lokasi_gudang_id');
+        return $this->belongsTo(Branch::class, 'branch_id', 'branch_id');
+    }
+
+    public function itemDetails()
+    {
+        return $this->hasMany(ItemDetail::class, 'warehouse_id');
     }
 
     public function users()

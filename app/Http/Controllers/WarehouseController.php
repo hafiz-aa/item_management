@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWarehouseRequest;
 use App\Http\Requests\UpdateWarehouseRequest;
+use App\Models\Branch;
 use App\Models\Warehouse;
 use App\Services\WarehouseService;
 use Illuminate\Http\RedirectResponse;
@@ -25,6 +26,7 @@ class WarehouseController extends Controller
             ->where('tipe', 'Kantor Pusat')
             ->values()
             ->load('children.children.children');
+
         return view('warehouses.index', compact('warehouses'));
     }
 
@@ -36,8 +38,9 @@ class WarehouseController extends Controller
         }
 
         $parentWarehouses = Warehouse::active()->get();
+        $branches = Branch::orderBy('branch_code')->get();
 
-        return view('warehouses.create', compact('parentWarehouses', 'selectedParent'));
+        return view('warehouses.create', compact('parentWarehouses', 'selectedParent', 'branches'));
     }
 
     public function store(StoreWarehouseRequest $request): RedirectResponse
@@ -57,10 +60,12 @@ class WarehouseController extends Controller
     {
         $warehouse->load('children.children');
         $parentWarehouses = Warehouse::active()
-            ->where('id', '!=', $warehouse->id)
-            ->whereNotIn('id', $warehouse->children->pluck('id'))
+            ->where('warehouse_id', '!=', $warehouse->warehouse_id)
+            ->whereNotIn('warehouse_id', $warehouse->children->pluck('warehouse_id'))
             ->get();
-        return view('warehouses.edit', compact('warehouse', 'parentWarehouses'));
+        $branches = Branch::orderBy('branch_code')->get();
+
+        return view('warehouses.edit', compact('warehouse', 'parentWarehouses', 'branches'));
     }
 
     public function update(UpdateWarehouseRequest $request, Warehouse $warehouse): RedirectResponse

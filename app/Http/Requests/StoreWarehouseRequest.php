@@ -18,7 +18,8 @@ class StoreWarehouseRequest extends FormRequest
             'kode_gudang' => ['required', 'string', 'max:50', 'unique:warehouses,kode_gudang'],
             'nama_gudang' => ['required', 'string', 'max:100'],
             'tipe' => ['required', 'string', Rule::in(['Kantor Pusat', 'Kantor Cabang'])],
-            'parent_id' => ['nullable', 'exists:warehouses,id'],
+            'branch_id' => ['nullable', 'exists:branches,branch_id'],
+            'parent_id' => ['nullable', 'exists:warehouses,warehouse_id'],
             'alamat' => ['nullable', 'string'],
             'status' => ['nullable', 'string', Rule::in(['Aktif', 'Tidak Aktif'])],
         ];

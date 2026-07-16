@@ -15,10 +15,11 @@ class CheckPermission
         }
 
         foreach ($permissions as $permission) {
-            if (!Auth::user()->can($permission)) {
+            if (! Auth::user()->can($permission)) {
                 if ($request->expectsJson()) {
                     return response()->json(['message' => 'Unauthorized.'], 403);
                 }
+
                 return redirect()->route('dashboard')
                     ->with('error', 'Anda tidak memiliki izin untuk mengakses halaman ini.');
             }

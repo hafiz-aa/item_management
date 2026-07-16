@@ -13,10 +13,10 @@ class ExportController extends Controller
     {
         $filters = $request->only([
             'search', 'warehouse_id', 'status', 'kategori',
-            'vendor', 'tahun_pembuatan', 'rusak', 'dijual'
+            'vendor', 'tahun_pembuatan', 'rusak', 'dijual',
         ]);
 
-        return Excel::download(new ItemsExport($filters), 'items-' . date('Y-m-d') . '.xlsx');
+        return Excel::download(new ItemsExport($filters), 'items-'.date('Y-m-d').'.xlsx');
     }
 
     public function template(): BinaryFileResponse

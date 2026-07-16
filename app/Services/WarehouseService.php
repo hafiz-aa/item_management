@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Repositories\WarehouseRepository;
 use App\Repositories\ActivityLogRepository;
+use App\Repositories\WarehouseRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,7 +37,7 @@ class WarehouseService extends BaseService
             'warehouse_created',
             "Membuat gudang baru: {$warehouse->nama_gudang}",
             get_class($warehouse),
-            $warehouse->id
+            $warehouse->warehouse_id
         );
 
         return $warehouse;
@@ -46,6 +46,7 @@ class WarehouseService extends BaseService
     public function update($warehouse, array $data): bool
     {
         $data['updated_by'] = Auth::id();
+
         return $this->repository->update($warehouse, $data);
     }
 

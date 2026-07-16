@@ -47,7 +47,7 @@
                     <label for="warehouses" class="form-label">Warehouse Access</label>
                     <select class="form-select @error('warehouses') is-invalid @enderror" id="warehouses" name="warehouses[]" multiple size="4">
                         @foreach($warehouses as $w)
-                            <option value="{{ $w->id }}" {{ $user->warehouses->contains($w->id) ? 'selected' : '' }}>{{ $w->nama_gudang }}</option>
+                            <option value="{{ $w->warehouse_id }}" {{ $user->warehouses->contains($w->warehouse_id) ? 'selected' : '' }}>{{ $w->nama_gudang }}</option>
                         @endforeach
                     </select>
                     @error('warehouses') <div class="invalid-feedback">{{ $message }}</div> @enderror

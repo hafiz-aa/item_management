@@ -12,6 +12,7 @@ class PermissionController extends Controller
     public function index(): View
     {
         $permissions = Permission::paginate(50);
+
         return view('permissions.index', compact('permissions'));
     }
 
@@ -44,7 +45,7 @@ class PermissionController extends Controller
     public function update(Request $request, Permission $permission): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:permissions,name,' . $permission->id,
+            'name' => 'required|string|max:255|unique:permissions,name,'.$permission->id,
         ]);
 
         $permission->update(['name' => $request->name]);

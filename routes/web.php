@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
@@ -27,6 +28,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::middleware(['can:warehouse.manage'])->group(function () {
         Route::resource('warehouses', WarehouseController::class)->except('show');
+    });
+
+    Route::middleware(['can:branch.view'])->group(function () {
+        Route::resource('branches', BranchController::class)->except('show');
+        Route::post('branches/{id}/restore', [BranchController::class, 'restore'])
+            ->name('branches.restore')
+            ->middleware('can:branch.delete');
     });
 
     Route::middleware(['can:user.manage'])->group(function () {
@@ -61,4 +69,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

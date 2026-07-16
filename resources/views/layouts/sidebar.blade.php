@@ -35,6 +35,20 @@
                 </li>
             @endcan
 
+            <li class="nav-item px-2 mt-2 mb-1 sidebar-section-header">
+                <small class="text-secondary text-uppercase px-2 fw-bold sidebar-label">Master Data</small>
+            </li>
+
+            @can('branch.view')
+                <li class="nav-item px-2 mb-1">
+                    <a href="{{ route('branches.index') }}"
+                        class="nav-link text-white {{ request()->routeIs('branches.*') ? 'active bg-primary' : '' }}"
+                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Branches">
+                        <i class="bi bi-diagram-3 me-2"></i><span class="sidebar-label">Branches</span>
+                    </a>
+                </li>
+            @endcan
+
             @can('warehouse.manage')
                 <li class="nav-item px-2 mb-1">
                     <a href="{{ route('warehouses.index') }}"

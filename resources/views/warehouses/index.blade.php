@@ -49,6 +49,7 @@ $(document).ready(function() {
                         <th>Parent</th>
                         <th>Kode Lokasi Gudang</th>
                         <th>Nama Lokasi Gudang</th>
+                        <th>Branch</th>
                         <th>Tipe</th>
                         <th>Alamat</th>
                         <th>Status</th>
@@ -58,11 +59,19 @@ $(document).ready(function() {
                 <tbody>
                     @forelse($warehouses as $w)
                     @php $hasChildren = $w->children->isNotEmpty(); @endphp
-                    <tr class="table-primary {{ $hasChildren ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $w->id }}" style="{{ $hasChildren ? 'cursor:pointer' : '' }}">
+                    <tr class="table-primary {{ $hasChildren ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $w->warehouse_id }}" style="{{ $hasChildren ? 'cursor:pointer' : '' }}">
                         <td>@if($hasChildren)<i class="bi bi-chevron-down"></i>@endif</td>
                         <td class="fw-bold">-</td>
                         <td class="fw-medium">{{ $w->kode_gudang }}</td>
                         <td>{{ $w->nama_gudang }}</td>
+                        <td>
+                            @if($w->branch)
+                                <span class="badge bg-info">{{ $w->branch->branch_code }}</span>
+                                {{ $w->branch->branch_name }}
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
                         <td><span class="badge bg-primary">{{ $w->tipe }}</span></td>
                         <td>{{ $w->alamat ?? '-' }}</td>
                         <td>
@@ -82,11 +91,18 @@ $(document).ready(function() {
                     </tr>
                     @foreach($w->children as $c1)
                     @php $hasChildren1 = $c1->children->isNotEmpty(); @endphp
-                    <tr class="child-of-{{ $w->id }} {{ $hasChildren1 ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $c1->id }}" style="{{ $hasChildren1 ? 'cursor:pointer' : '' }}">
+                    <tr class="child-of-{{ $w->warehouse_id }} {{ $hasChildren1 ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $c1->warehouse_id }}" style="{{ $hasChildren1 ? 'cursor:pointer' : '' }}">
                         <td>@if($hasChildren1)<i class="bi bi-chevron-down"></i>@endif</td>
                         <td class="text-muted">{{ $w->nama_gudang }}</td>
                         <td class="ps-4 text-muted">{{ $c1->kode_gudang }}</td>
                         <td class="ps-4 text-muted">{{ $c1->nama_gudang }}</td>
+                        <td>
+                            @if($c1->branch)
+                                <span class="badge bg-info">{{ $c1->branch->branch_code }}</span>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
                         <td><span class="badge bg-info">{{ $c1->tipe }}</span></td>
                         <td>-</td>
                         <td>
@@ -106,11 +122,18 @@ $(document).ready(function() {
                     </tr>
                     @foreach($c1->children as $c2)
                     @php $hasChildren2 = $c2->children->isNotEmpty(); @endphp
-                    <tr class="child-of-{{ $c1->id }} {{ $hasChildren2 ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $c2->id }}" style="{{ $hasChildren2 ? 'cursor:pointer' : '' }}">
+                    <tr class="child-of-{{ $c1->warehouse_id }} {{ $hasChildren2 ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $c2->warehouse_id }}" style="{{ $hasChildren2 ? 'cursor:pointer' : '' }}">
                         <td>@if($hasChildren2)<i class="bi bi-chevron-down"></i>@endif</td>
                         <td class="text-muted">{{ $c1->nama_gudang }}</td>
                         <td class="ps-5 text-muted">{{ $c2->kode_gudang }}</td>
                         <td class="ps-5 text-muted">{{ $c2->nama_gudang }}</td>
+                        <td>
+                            @if($c2->branch)
+                                <span class="badge bg-info">{{ $c2->branch->branch_code }}</span>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
                         <td><span class="badge bg-secondary">{{ $c2->tipe }}</span></td>
                         <td>-</td>
                         <td>
@@ -129,11 +152,18 @@ $(document).ready(function() {
                         </td>
                     </tr>
                     @foreach($c2->children as $c3)
-                    <tr class="child-of-{{ $c2->id }}">
+                    <tr class="child-of-{{ $c2->warehouse_id }}">
                         <td></td>
                         <td class="text-muted">{{ $c2->nama_gudang }}</td>
                         <td class="ps-6 text-muted">{{ $c3->kode_gudang }}</td>
                         <td class="ps-6 text-muted">{{ $c3->nama_gudang }}</td>
+                        <td>
+                            @if($c3->branch)
+                                <span class="badge bg-info">{{ $c3->branch->branch_code }}</span>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
                         <td><span class="badge bg-secondary">{{ $c3->tipe }}</span></td>
                         <td>-</td>
                         <td>
@@ -155,7 +185,7 @@ $(document).ready(function() {
                     @endforeach
                     @endforeach
                     @empty
-                    <tr><td colspan="8" class="text-center py-4 text-muted">No data found.</td></tr>
+                    <tr><td colspan="9" class="text-center py-4 text-muted">No data found.</td></tr>
                     @endforelse
                 </tbody>
             </table>

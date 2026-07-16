@@ -8,13 +8,13 @@ use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\WarehouseService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
     private UserRepository $userRepository;
+
     private WarehouseService $warehouseService;
 
     public function __construct(UserRepository $userRepository, WarehouseService $warehouseService)
@@ -26,6 +26,7 @@ class UserController extends Controller
     public function index(): View
     {
         $users = User::with('roles', 'warehouses')->paginate(15);
+
         return view('users.index', compact('users'));
     }
 
@@ -33,6 +34,7 @@ class UserController extends Controller
     {
         $roles = Role::all();
         $warehouses = $this->warehouseService->getActive();
+
         return view('users.create', compact('roles', 'warehouses'));
     }
 
@@ -46,7 +48,7 @@ class UserController extends Controller
             'is_active' => true,
         ], $data['roles']);
 
-        if (!empty($data['warehouses'])) {
+        if (! empty($data['warehouses'])) {
             $user->warehouses()->sync($data['warehouses']);
         }
 
@@ -59,6 +61,7 @@ class UserController extends Controller
         $roles = Role::all();
         $warehouses = $this->warehouseService->getActive();
         $user->load('warehouses');
+
         return view('users.edit', compact('user', 'roles', 'warehouses'));
     }
 
@@ -71,7 +74,7 @@ class UserController extends Controller
             'email' => $data['email'],
         ];
 
-        if (!empty($data['password'])) {
+        if (! empty($data['password'])) {
             $updateData['password'] = bcrypt($data['password']);
         }
 

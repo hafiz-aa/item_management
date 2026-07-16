@@ -17,10 +17,11 @@ class UpdateWarehouseRequest extends FormRequest
         $warehouseId = $this->route('warehouse');
 
         return [
-            'kode_gudang' => ['required', 'string', 'max:50', Rule::unique('warehouses', 'kode_gudang')->ignore($warehouseId)],
+            'kode_gudang' => ['required', 'string', 'max:50', Rule::unique('warehouses', 'kode_gudang')->ignore($warehouseId, 'warehouse_id')],
             'nama_gudang' => ['required', 'string', 'max:100'],
             'tipe' => ['required', 'string', Rule::in(['Kantor Pusat', 'Kantor Cabang'])],
-            'parent_id' => ['nullable', 'exists:warehouses,id'],
+            'branch_id' => ['nullable', 'exists:branches,branch_id'],
+            'parent_id' => ['nullable', 'exists:warehouses,warehouse_id'],
             'alamat' => ['nullable', 'string'],
             'status' => ['nullable', 'string', Rule::in(['Aktif', 'Tidak Aktif'])],
         ];

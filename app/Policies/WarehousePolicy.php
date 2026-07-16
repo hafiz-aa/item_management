@@ -14,7 +14,7 @@ class WarehousePolicy
 
     public function view(User $user, Warehouse $warehouse): bool
     {
-        if (!$user->can('warehouse.manage')) {
+        if (! $user->can('warehouse.manage')) {
             return false;
         }
 
@@ -22,7 +22,7 @@ class WarehousePolicy
             return true;
         }
 
-        return $user->warehouses->contains('id', $warehouse->id);
+        return $user->warehouses->contains('warehouse_id', $warehouse->warehouse_id);
     }
 
     public function create(User $user): bool

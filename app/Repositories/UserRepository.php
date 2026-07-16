@@ -15,6 +15,7 @@ class UserRepository extends BaseRepository
     {
         $user = $this->model->create($data);
         $user->assignRole($roles);
+
         return $user;
     }
 
@@ -24,6 +25,7 @@ class UserRepository extends BaseRepository
         if ($updated) {
             $user->syncRoles($roles);
         }
+
         return $updated;
     }
 }

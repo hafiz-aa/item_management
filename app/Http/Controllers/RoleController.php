@@ -6,14 +6,15 @@ use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
     public function index(): View
     {
         $roles = Role::with('permissions')->paginate(15);
+
         return view('roles.index', compact('roles'));
     }
 
@@ -22,6 +23,7 @@ class RoleController extends Controller
         $permissions = Permission::all()->groupBy(function ($permission) {
             return explode('.', $permission->name)[0] ?? 'general';
         });
+
         return view('roles.create', compact('permissions'));
     }
 

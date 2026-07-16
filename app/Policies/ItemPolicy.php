@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Item;
+use App\Models\ItemHeader;
 use App\Models\User;
 
 class ItemPolicy
@@ -12,9 +12,9 @@ class ItemPolicy
         return $user->can('item.view');
     }
 
-    public function view(User $user, Item $item): bool
+    public function view(User $user, ItemHeader $item): bool
     {
-        if (!$user->can('item.view')) {
+        if (! $user->can('item.view')) {
             return false;
         }
 
@@ -22,7 +22,9 @@ class ItemPolicy
             return true;
         }
 
-        return $user->warehouses->contains('id', $item->lokasi_gudang_id);
+        $warehouseIds = $item->details->pluck('warehouse_id')->filter()->toArray();
+
+        return $user->warehouses->whereIn('id', $warehouseIds)->isNotEmpty();
     }
 
     public function create(User $user): bool
@@ -30,9 +32,9 @@ class ItemPolicy
         return $user->can('item.create');
     }
 
-    public function update(User $user, Item $item): bool
+    public function update(User $user, ItemHeader $item): bool
     {
-        if (!$user->can('item.edit')) {
+        if (! $user->can('item.edit')) {
             return false;
         }
 
@@ -40,12 +42,14 @@ class ItemPolicy
             return true;
         }
 
-        return $user->warehouses->contains('id', $item->lokasi_gudang_id);
+        $warehouseIds = $item->details->pluck('warehouse_id')->filter()->toArray();
+
+        return $user->warehouses->whereIn('id', $warehouseIds)->isNotEmpty();
     }
 
-    public function delete(User $user, Item $item): bool
+    public function delete(User $user, ItemHeader $item): bool
     {
-        if (!$user->can('item.delete')) {
+        if (! $user->can('item.delete')) {
             return false;
         }
 
@@ -53,7 +57,9 @@ class ItemPolicy
             return true;
         }
 
-        return $user->warehouses->contains('id', $item->lokasi_gudang_id);
+        $warehouseIds = $item->details->pluck('warehouse_id')->filter()->toArray();
+
+        return $user->warehouses->whereIn('id', $warehouseIds)->isNotEmpty();
     }
 
     public function import(User $user): bool

@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -20,6 +20,10 @@ class RolePermissionSeeder extends Seeder
             'item.export',
             'item.import',
             'warehouse.manage',
+            'branch.view',
+            'branch.create',
+            'branch.edit',
+            'branch.delete',
             'user.manage',
             'role.manage',
             'permission.manage',
@@ -36,12 +40,13 @@ class RolePermissionSeeder extends Seeder
         $adminGudang = Role::firstOrCreate(['name' => 'Admin Gudang', 'guard_name' => 'web']);
         $adminGudang->syncPermissions([
             'item.view', 'item.create', 'item.edit', 'item.delete',
-            'item.export', 'item.import', 'warehouse.manage', 'activity-log.view',
+            'item.export', 'item.import', 'warehouse.manage', 'branch.view', 'activity-log.view',
         ]);
 
         $staffGudang = Role::firstOrCreate(['name' => 'Staff Gudang', 'guard_name' => 'web']);
         $staffGudang->syncPermissions([
             'item.view', 'item.create', 'item.edit', 'item.export', 'item.import',
+            'branch.view',
         ]);
 
         $viewer = Role::firstOrCreate(['name' => 'Viewer', 'guard_name' => 'web']);

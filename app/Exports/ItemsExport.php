@@ -2,17 +2,18 @@
 
 namespace App\Exports;
 
-use App\Models\Item;
+use App\Models\ItemHeader;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ItemsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
+class ItemsExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMapping, WithStyles
 {
     private array $filters;
+
     private bool $isTemplate;
 
     public function __construct(array $filters = [], bool $isTemplate = false)
@@ -24,37 +25,25 @@ class ItemsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSiz
     public function query()
     {
         if ($this->isTemplate) {
-            return Item::whereNull('id');
+            return ItemHeader::whereNull('itemh_id');
         }
 
-        $query = Item::query()->with('warehouse');
+        $query = ItemHeader::query()->with('details.warehouse');
 
-        if (!empty($this->filters['warehouse_id'])) {
-            $query->where('lokasi_gudang_id', $this->filters['warehouse_id']);
+        if (! empty($this->filters['warehouse_id'])) {
+            $query->whereHas('details', function ($q) {
+                $q->where('warehouse_id', $this->filters['warehouse_id']);
+            });
         }
 
-        if (!empty($this->filters['status'])) {
-            $query->where('status', $this->filters['status']);
+        if (! empty($this->filters['status'])) {
+            $query->whereHas('details', function ($q) {
+                $q->where('status', $this->filters['status']);
+            });
         }
 
-        if (!empty($this->filters['kategori'])) {
-            $query->where('kategori', $this->filters['kategori']);
-        }
-
-        if (!empty($this->filters['vendor'])) {
-            $query->where('vendor', $this->filters['vendor']);
-        }
-
-        if (!empty($this->filters['tahun_pembuatan'])) {
-            $query->where('tahun_pembuatan', $this->filters['tahun_pembuatan']);
-        }
-
-        if (isset($this->filters['rusak'])) {
-            $query->where('rusak', filter_var($this->filters['rusak'], FILTER_VALIDATE_BOOLEAN));
-        }
-
-        if (isset($this->filters['dijual'])) {
-            $query->where('dijual', filter_var($this->filters['dijual'], FILTER_VALIDATE_BOOLEAN));
+        if (! empty($this->filters['cat_id'])) {
+            $query->where('cat_id', $this->filters['cat_id']);
         }
 
         return $query;
@@ -63,44 +52,42 @@ class ItemsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSiz
     public function headings(): array
     {
         return [
-            'Kode Tabung',
-            'Deskripsi Isi',
-            'Serial No',
-            'Tahun Pembuatan',
-            'Berat',
-            'Kapasitas',
-            'UoM',
+            'Item Code',
+            'Item Name',
+            'Capacity',
+            'UoM 1',
+            'UoM 2',
+            'Category',
+            'Detail Code',
             'Qty',
-            'Tanggal Perolehan',
-            'Kategori',
             'Status',
-            'Rusak',
-            'Dijual',
-            'Lokasi Gudang',
-            'Vendor',
-            'Pemilik Tabung',
+            'Acquired Date',
+            'Warehouse',
+            'Broken',
+            'Disposed',
+            'Write Off',
         ];
     }
 
     public function map($item): array
     {
+        $detail = $item->details->first();
+
         return [
-            $item->kode_tabung,
-            $item->deskripsi_isi_tabung,
-            $item->serial_no,
-            $item->tahun_pembuatan,
-            $item->berat,
-            $item->kapasitas,
-            $item->uom,
-            $item->qty,
-            $item->tanggal_perolehan?->format('Y-m-d'),
-            $item->kategori,
-            $item->status,
-            $item->rusak ? 'Ya' : 'Tidak',
-            $item->dijual ? 'Ya' : 'Tidak',
-            $item->warehouse?->nama_gudang,
-            $item->vendor,
-            $item->pemilik_tabung,
+            $item->item_code,
+            $item->item_name,
+            $item->capacity,
+            $item->uom_id_1,
+            $item->uom_id_2,
+            $item->cat_id,
+            $detail?->itemd_code,
+            $detail?->qty,
+            $detail?->status,
+            $detail?->acquired_date?->format('Y-m-d'),
+            $detail->warehouse?->nama_gudang ?? null,
+            $detail?->is_broken ? 'Ya' : 'Tidak',
+            $detail?->is_dispossed ? 'Ya' : 'Tidak',
+            $detail?->is_writeoff ? 'Ya' : 'Tidak',
         ];
     }
 

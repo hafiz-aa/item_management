@@ -22,6 +22,7 @@ class WarehouseRepository extends BaseRepository
         if ($user->hasRole('Super Admin')) {
             return $this->model->newQuery()->get();
         }
+
         return $user->warehouses;
     }
 }
