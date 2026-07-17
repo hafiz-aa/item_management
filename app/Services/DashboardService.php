@@ -47,7 +47,7 @@ class DashboardService
     private function getWarehouseChartData(): array
     {
         $warehouseCounts = $this->itemRepo->countByWarehouse();
-        $warehouses = Warehouse::whereIn('id', array_keys($warehouseCounts))->pluck('nama_gudang', 'id');
+        $warehouses = Warehouse::whereIn('warehouse_id', array_keys($warehouseCounts))->pluck('nama_gudang', 'warehouse_id');
 
         $labels = [];
         $data = [];

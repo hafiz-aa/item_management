@@ -54,7 +54,7 @@ class Warehouse extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_warehouse');
+        return $this->belongsToMany(User::class, 'user_warehouse', 'warehouse_id', 'user_id', 'warehouse_id', 'id');
     }
 
     public function creator()

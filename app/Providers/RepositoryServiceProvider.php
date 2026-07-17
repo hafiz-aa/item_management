@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Repositories\ActivityLogRepository;
 use App\Repositories\BranchRepository;
+use App\Repositories\ItemCategoryRepository;
+use App\Repositories\ItemDescriptionRepository;
 use App\Repositories\ItemRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WarehouseRepository;
@@ -32,6 +34,14 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             ActivityLogRepository::class,
             ActivityLogRepository::class
+        );
+        $this->app->bind(
+            ItemCategoryRepository::class,
+            ItemCategoryRepository::class
+        );
+        $this->app->bind(
+            ItemDescriptionRepository::class,
+            ItemDescriptionRepository::class
         );
     }
 

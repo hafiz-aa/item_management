@@ -35,6 +35,26 @@
                 </li>
             @endcan
 
+            @can('item-category.view')
+                <li class="nav-item px-2 mb-1">
+                    <a href="{{ route('item-categories.index') }}"
+                        class="nav-link text-white {{ request()->routeIs('item-categories.*') ? 'active bg-primary' : '' }}"
+                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Item Categories">
+                        <i class="bi bi-tags me-2"></i><span class="sidebar-label">Item Categories</span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('item-description.view')
+                <li class="nav-item px-2 mb-1">
+                    <a href="{{ route('item-descriptions.index') }}"
+                        class="nav-link text-white {{ request()->routeIs('item-descriptions.*') ? 'active bg-primary' : '' }}"
+                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Item Descriptions">
+                        <i class="bi bi-list-ul me-2"></i><span class="sidebar-label">Item Descriptions</span>
+                    </a>
+                </li>
+            @endcan
+
             <li class="nav-item px-2 mt-2 mb-1 sidebar-section-header">
                 <small class="text-secondary text-uppercase px-2 fw-bold sidebar-label">Master Data</small>
             </li>

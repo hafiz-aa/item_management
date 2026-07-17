@@ -5,7 +5,9 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ItemDescriptionController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -35,6 +37,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('branches/{id}/restore', [BranchController::class, 'restore'])
             ->name('branches.restore')
             ->middleware('can:branch.delete');
+    });
+
+    Route::middleware(['can:item-category.view'])->group(function () {
+        Route::resource('item-categories', ItemCategoryController::class)->except('show');
+        Route::post('item-categories/{id}/restore', [ItemCategoryController::class, 'restore'])
+            ->name('item-categories.restore')
+            ->middleware('can:item-category.delete');
+    });
+
+    Route::middleware(['can:item-description.view'])->group(function () {
+        Route::resource('item-descriptions', ItemDescriptionController::class)->except('show');
+        Route::post('item-descriptions/{id}/restore', [ItemDescriptionController::class, 'restore'])
+            ->name('item-descriptions.restore')
+            ->middleware('can:item-description.delete');
     });
 
     Route::middleware(['can:user.manage'])->group(function () {

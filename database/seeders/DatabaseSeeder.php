@@ -12,6 +12,8 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             BranchSeeder::class,
             WarehouseSeeder::class,
+            ItemCategorySeeder::class,
+            ItemDescriptionSeeder::class,
             ItemSeeder::class,
         ]);
     }

@@ -24,6 +24,14 @@ class RolePermissionSeeder extends Seeder
             'branch.create',
             'branch.edit',
             'branch.delete',
+            'item-category.view',
+            'item-category.create',
+            'item-category.edit',
+            'item-category.delete',
+            'item-description.view',
+            'item-description.create',
+            'item-description.edit',
+            'item-description.delete',
             'user.manage',
             'role.manage',
             'permission.manage',
@@ -40,13 +48,18 @@ class RolePermissionSeeder extends Seeder
         $adminGudang = Role::firstOrCreate(['name' => 'Admin Gudang', 'guard_name' => 'web']);
         $adminGudang->syncPermissions([
             'item.view', 'item.create', 'item.edit', 'item.delete',
-            'item.export', 'item.import', 'warehouse.manage', 'branch.view', 'activity-log.view',
+            'item.export', 'item.import', 'warehouse.manage', 'branch.view',
+            'item-category.view', 'item-category.create', 'item-category.edit', 'item-category.delete',
+            'item-description.view', 'item-description.create', 'item-description.edit', 'item-description.delete',
+            'activity-log.view',
         ]);
 
         $staffGudang = Role::firstOrCreate(['name' => 'Staff Gudang', 'guard_name' => 'web']);
         $staffGudang->syncPermissions([
             'item.view', 'item.create', 'item.edit', 'item.export', 'item.import',
             'branch.view',
+            'item-category.view', 'item-category.create',
+            'item-description.view', 'item-description.create',
         ]);
 
         $viewer = Role::firstOrCreate(['name' => 'Viewer', 'guard_name' => 'web']);

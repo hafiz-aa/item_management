@@ -20,7 +20,7 @@ class StoreUserRequest extends FormRequest
             'roles' => ['required', 'array'],
             'roles.*' => ['exists:roles,id'],
             'warehouses' => ['nullable', 'array'],
-            'warehouses.*' => ['exists:warehouses,id'],
+            'warehouses.*' => ['exists:warehouses,warehouse_id'],
         ];
     }
 }

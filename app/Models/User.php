@@ -34,7 +34,7 @@ class User extends Authenticatable
 
     public function warehouses()
     {
-        return $this->belongsToMany(Warehouse::class, 'user_warehouse');
+        return $this->belongsToMany(Warehouse::class, 'user_warehouse', 'user_id', 'warehouse_id', 'id', 'warehouse_id');
     }
 
     public function createdItemHeaders()

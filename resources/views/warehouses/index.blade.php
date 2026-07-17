@@ -2,12 +2,21 @@
 
 @section('title', 'Warehouses')
 
+@push('styles')
+<style>
+    .child-row { display: none; }
+    .toggle-parent { cursor: pointer; }
+    .toggle-parent:hover { filter: brightness(0.95); }
+</style>
+@endpush
+
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
     $('.btn-delete').on('click', function(e) {
         e.preventDefault();
+        e.stopPropagation();
         var form = $(this).closest('form');
         Swal.fire({
             title: 'Konfirmasi Hapus',
@@ -23,10 +32,17 @@ $(document).ready(function() {
         });
     });
 
-    $('.toggle-children').on('click', function() {
-        var cls = $(this).data('toggle');
-        $('.' + cls).toggle();
-        $(this).find('i.bi-chevron-down, i.bi-chevron-up').toggleClass('bi-chevron-down bi-chevron-up');
+    $('.btn-edit').on('click', function(e) {
+        e.stopPropagation();
+    });
+
+    $('.toggle-parent').on('click', function() {
+        var id = $(this).data('warehouse-id');
+        var children = $('.child-of-' + id);
+        var icon = $(this).find('.toggle-icon');
+
+        children.toggle();
+        icon.toggleClass('bi-chevron-down bi-chevron-up');
     });
 });
 </script>
@@ -59,8 +75,8 @@ $(document).ready(function() {
                 <tbody>
                     @forelse($warehouses as $w)
                     @php $hasChildren = $w->children->isNotEmpty(); @endphp
-                    <tr class="table-primary {{ $hasChildren ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $w->warehouse_id }}" style="{{ $hasChildren ? 'cursor:pointer' : '' }}">
-                        <td>@if($hasChildren)<i class="bi bi-chevron-down"></i>@endif</td>
+                    <tr class="table-primary toggle-parent {{ $hasChildren ? '' : '' }}" data-warehouse-id="{{ $w->warehouse_id }}">
+                        <td>@if($hasChildren)<i class="bi bi-chevron-down toggle-icon"></i>@endif</td>
                         <td class="fw-bold">-</td>
                         <td class="fw-medium">{{ $w->kode_gudang }}</td>
                         <td>{{ $w->nama_gudang }}</td>
@@ -80,7 +96,7 @@ $(document).ready(function() {
                         <td>
                             <div class="d-flex gap-1">
                                 @can('warehouse.manage')
-                                <a href="{{ route('warehouses.edit', $w) }}" class="btn btn-sm btn-warning text-white" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <a href="{{ route('warehouses.edit', $w) }}" class="btn btn-sm btn-warning text-white btn-edit" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <form action="{{ route('warehouses.destroy', $w) }}" method="POST">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete"><i class="bi bi-trash"></i></button>
@@ -91,8 +107,8 @@ $(document).ready(function() {
                     </tr>
                     @foreach($w->children as $c1)
                     @php $hasChildren1 = $c1->children->isNotEmpty(); @endphp
-                    <tr class="child-of-{{ $w->warehouse_id }} {{ $hasChildren1 ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $c1->warehouse_id }}" style="{{ $hasChildren1 ? 'cursor:pointer' : '' }}">
-                        <td>@if($hasChildren1)<i class="bi bi-chevron-down"></i>@endif</td>
+                    <tr class="child-of-{{ $w->warehouse_id }} {{ $hasChildren1 ? 'toggle-parent' : '' }}" @if($hasChildren1) data-warehouse-id="{{ $c1->warehouse_id }}" @endif>
+                        <td>@if($hasChildren1)<i class="bi bi-chevron-down toggle-icon"></i>@endif</td>
                         <td class="text-muted">{{ $w->nama_gudang }}</td>
                         <td class="ps-4 text-muted">{{ $c1->kode_gudang }}</td>
                         <td class="ps-4 text-muted">{{ $c1->nama_gudang }}</td>
@@ -111,7 +127,7 @@ $(document).ready(function() {
                         <td>
                             <div class="d-flex gap-1">
                                 @can('warehouse.manage')
-                                <a href="{{ route('warehouses.edit', $c1) }}" class="btn btn-sm btn-warning text-white" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <a href="{{ route('warehouses.edit', $c1) }}" class="btn btn-sm btn-warning text-white btn-edit" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <form action="{{ route('warehouses.destroy', $c1) }}" method="POST">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete"><i class="bi bi-trash"></i></button>
@@ -122,8 +138,8 @@ $(document).ready(function() {
                     </tr>
                     @foreach($c1->children as $c2)
                     @php $hasChildren2 = $c2->children->isNotEmpty(); @endphp
-                    <tr class="child-of-{{ $c1->warehouse_id }} {{ $hasChildren2 ? 'toggle-children' : '' }}" data-toggle="child-of-{{ $c2->warehouse_id }}" style="{{ $hasChildren2 ? 'cursor:pointer' : '' }}">
-                        <td>@if($hasChildren2)<i class="bi bi-chevron-down"></i>@endif</td>
+                    <tr class="child-of-{{ $w->warehouse_id }} child-of-{{ $c1->warehouse_id }} {{ $hasChildren2 ? 'toggle-parent' : '' }}" @if($hasChildren2) data-warehouse-id="{{ $c2->warehouse_id }}" @endif>
+                        <td>@if($hasChildren2)<i class="bi bi-chevron-down toggle-icon"></i>@endif</td>
                         <td class="text-muted">{{ $c1->nama_gudang }}</td>
                         <td class="ps-5 text-muted">{{ $c2->kode_gudang }}</td>
                         <td class="ps-5 text-muted">{{ $c2->nama_gudang }}</td>
@@ -142,7 +158,7 @@ $(document).ready(function() {
                         <td>
                             <div class="d-flex gap-1">
                                 @can('warehouse.manage')
-                                <a href="{{ route('warehouses.edit', $c2) }}" class="btn btn-sm btn-warning text-white" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <a href="{{ route('warehouses.edit', $c2) }}" class="btn btn-sm btn-warning text-white btn-edit" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <form action="{{ route('warehouses.destroy', $c2) }}" method="POST">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete"><i class="bi bi-trash"></i></button>
@@ -152,7 +168,7 @@ $(document).ready(function() {
                         </td>
                     </tr>
                     @foreach($c2->children as $c3)
-                    <tr class="child-of-{{ $c2->warehouse_id }}">
+                    <tr class="child-of-{{ $w->warehouse_id }} child-of-{{ $c1->warehouse_id }} child-of-{{ $c2->warehouse_id }}">
                         <td></td>
                         <td class="text-muted">{{ $c2->nama_gudang }}</td>
                         <td class="ps-6 text-muted">{{ $c3->kode_gudang }}</td>
@@ -172,7 +188,7 @@ $(document).ready(function() {
                         <td>
                             <div class="d-flex gap-1">
                                 @can('warehouse.manage')
-                                <a href="{{ route('warehouses.edit', $c3) }}" class="btn btn-sm btn-warning text-white" title="Edit"><i class="bi bi-pencil"></i></a>
+                                <a href="{{ route('warehouses.edit', $c3) }}" class="btn btn-sm btn-warning text-white btn-edit" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <form action="{{ route('warehouses.destroy', $c3) }}" method="POST">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete"><i class="bi bi-trash"></i></button>

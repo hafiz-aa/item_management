@@ -24,7 +24,7 @@ class ItemPolicy
 
         $warehouseIds = $item->details->pluck('warehouse_id')->filter()->toArray();
 
-        return $user->warehouses->whereIn('id', $warehouseIds)->isNotEmpty();
+        return $user->warehouses->whereIn('warehouse_id', $warehouseIds)->isNotEmpty();
     }
 
     public function create(User $user): bool
@@ -44,7 +44,7 @@ class ItemPolicy
 
         $warehouseIds = $item->details->pluck('warehouse_id')->filter()->toArray();
 
-        return $user->warehouses->whereIn('id', $warehouseIds)->isNotEmpty();
+        return $user->warehouses->whereIn('warehouse_id', $warehouseIds)->isNotEmpty();
     }
 
     public function delete(User $user, ItemHeader $item): bool
@@ -59,7 +59,7 @@ class ItemPolicy
 
         $warehouseIds = $item->details->pluck('warehouse_id')->filter()->toArray();
 
-        return $user->warehouses->whereIn('id', $warehouseIds)->isNotEmpty();
+        return $user->warehouses->whereIn('warehouse_id', $warehouseIds)->isNotEmpty();
     }
 
     public function import(User $user): bool
