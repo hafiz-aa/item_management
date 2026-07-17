@@ -17,10 +17,10 @@ class UpdateBranchRequest extends FormRequest
         $branchId = $this->route('branch');
 
         return [
-            'branch_code' => ['required', 'string', 'max:50', Rule::unique('branches', 'branch_code')->ignore($branchId, 'branch_id')],
+            'branch_code' => ['required', 'string', 'max:50', Rule::unique('branch', 'branch_code')->ignore($branchId, 'branch_id')],
             'branch_name' => ['required', 'string', 'max:100'],
-            'branch_is_headquarter' => ['nullable', 'boolean'],
-            'branch_address' => ['nullable', 'string'],
+            'branch_is_headquarter' => ['nullable', 'string', 'in:0,1'],
+            'branch_address' => ['nullable', 'string', 'max:255'],
         ];
     }
 

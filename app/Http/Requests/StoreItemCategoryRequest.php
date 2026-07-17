@@ -14,18 +14,18 @@ class StoreItemCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_code' => ['required', 'string', 'max:50', 'unique:item_categories,category_code'],
-            'category_name' => ['required', 'string', 'max:100'],
-            'description' => ['nullable', 'string'],
+            'cati_code' => ['required', 'string', 'max:50', 'unique:category_item,cati_code'],
+            'cati_name' => ['required', 'string', 'max:100'],
+            'cati_notes' => ['nullable', 'string', 'max:255'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'category_code.required' => 'Kode kategori wajib diisi.',
-            'category_code.unique' => 'Kode kategori sudah digunakan.',
-            'category_name.required' => 'Nama kategori wajib diisi.',
+            'cati_code.required' => 'Kode kategori wajib diisi.',
+            'cati_code.unique' => 'Kode kategori sudah digunakan.',
+            'cati_name.required' => 'Nama kategori wajib diisi.',
         ];
     }
 }

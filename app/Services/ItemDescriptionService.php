@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\ItemDescription;
+use App\Models\MasterItem;
 use App\Repositories\ActivityLogRepository;
 use App\Repositories\ItemDescriptionRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -23,27 +23,27 @@ class ItemDescriptionService extends BaseService
         return $this->repository->search($filters);
     }
 
-    public function findById(int $id): ItemDescription
+    public function findById(int $id): MasterItem
     {
         return $this->repository->findById($id);
     }
 
-    public function create(array $data): ItemDescription
+    public function create(array $data): MasterItem
     {
         $itemDesc = $this->repository->create($data);
 
         $this->logRepo->log(
             Auth::id(),
             'item_description_created',
-            "Membuat item description baru: {$itemDesc->item_code}",
-            ItemDescription::class,
-            $itemDesc->item_desc_id
+            "Membuat item description baru: {$itemDesc->masti_code}",
+            MasterItem::class,
+            $itemDesc->masti_id
         );
 
         return $itemDesc;
     }
 
-    public function update(ItemDescription $itemDesc, array $data): bool
+    public function update(MasterItem $itemDesc, array $data): bool
     {
         $updated = $this->repository->update($itemDesc, $data);
 
@@ -51,18 +51,18 @@ class ItemDescriptionService extends BaseService
             $this->logRepo->log(
                 Auth::id(),
                 'item_description_updated',
-                "Mengupdate item description: {$itemDesc->item_code}",
-                ItemDescription::class,
-                $itemDesc->item_desc_id
+                "Mengupdate item description: {$itemDesc->masti_code}",
+                MasterItem::class,
+                $itemDesc->masti_id
             );
         }
 
         return $updated;
     }
 
-    public function delete(ItemDescription $itemDesc): bool
+    public function delete(MasterItem $itemDesc): bool
     {
-        $code = $itemDesc->item_code;
+        $code = $itemDesc->masti_code;
         $deleted = $this->repository->delete($itemDesc);
 
         if ($deleted) {
@@ -70,8 +70,8 @@ class ItemDescriptionService extends BaseService
                 Auth::id(),
                 'item_description_deleted',
                 "Menghapus item description: {$code}",
-                ItemDescription::class,
-                $itemDesc->item_desc_id
+                MasterItem::class,
+                $itemDesc->masti_id
             );
         }
 
@@ -80,19 +80,6 @@ class ItemDescriptionService extends BaseService
 
     public function restore(int $id): bool
     {
-        $itemDesc = ItemDescription::onlyTrashed()->findOrFail($id);
-        $restored = $itemDesc->restore();
-
-        if ($restored) {
-            $this->logRepo->log(
-                Auth::id(),
-                'item_description_restored',
-                "Memulihkan item description: {$itemDesc->item_code}",
-                ItemDescription::class,
-                $itemDesc->item_desc_id
-            );
-        }
-
-        return $restored;
+        return false;
     }
 }

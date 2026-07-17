@@ -24,10 +24,6 @@ class BranchRepository extends BaseRepository
             });
         }
 
-        if (! empty($filters['trashed'])) {
-            $query->onlyTrashed();
-        }
-
         $query->orderBy('branch_id', 'asc');
 
         return $query->paginate($filters['per_page'] ?? 15);

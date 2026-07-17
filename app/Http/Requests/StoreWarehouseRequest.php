@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreWarehouseRequest extends FormRequest
 {
@@ -15,13 +14,12 @@ class StoreWarehouseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'kode_gudang' => ['required', 'string', 'max:50', 'unique:warehouses,kode_gudang'],
-            'nama_gudang' => ['required', 'string', 'max:100'],
-            'tipe' => ['required', 'string', Rule::in(['Kantor Pusat', 'Kantor Cabang'])],
-            'branch_id' => ['nullable', 'exists:branches,branch_id'],
-            'parent_id' => ['nullable', 'exists:warehouses,warehouse_id'],
-            'alamat' => ['nullable', 'string'],
-            'status' => ['nullable', 'string', Rule::in(['Aktif', 'Tidak Aktif'])],
+            'whsl_code' => ['required', 'string', 'max:50', 'unique:warehouse_location,whsl_code'],
+            'whsl_name' => ['required', 'string', 'max:255'],
+            'whsl_type' => ['required', 'string', 'in:0,1'],
+            'branch_id' => ['required', 'integer', 'exists:branch,branch_id'],
+            'whsl_parent_id' => ['nullable', 'integer', 'exists:warehouse_location,whsl_id'],
+            'whsl_status' => ['nullable', 'string', 'in:0,1'],
         ];
     }
 }

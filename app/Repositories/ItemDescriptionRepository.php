@@ -2,14 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Models\ItemDescription;
+use App\Models\MasterItem;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ItemDescriptionRepository extends BaseRepository
 {
     protected function model(): string
     {
-        return ItemDescription::class;
+        return MasterItem::class;
     }
 
     public function search(array $filters = []): LengthAwarePaginator
@@ -19,16 +19,12 @@ class ItemDescriptionRepository extends BaseRepository
         if (! empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
-                $q->where('item_code', 'like', "%{$search}%")
-                    ->orWhere('item_description', 'like', "%{$search}%");
+                $q->where('masti_code', 'like', "%{$search}%")
+                    ->orWhere('masti_name', 'like', "%{$search}%");
             });
         }
 
-        if (! empty($filters['trashed'])) {
-            $query->onlyTrashed();
-        }
-
-        $query->orderBy('item_desc_id', 'asc');
+        $query->orderBy('masti_id', 'asc');
 
         return $query->paginate($filters['per_page'] ?? 15);
     }

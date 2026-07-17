@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\ItemHeader;
+use App\Models\MasterItem;
 use App\Models\User;
 
 class ItemPolicy
@@ -12,7 +12,7 @@ class ItemPolicy
         return $user->can('item.view');
     }
 
-    public function view(User $user, ItemHeader $item): bool
+    public function view(User $user, MasterItem $item): bool
     {
         if (! $user->can('item.view')) {
             return false;
@@ -22,9 +22,9 @@ class ItemPolicy
             return true;
         }
 
-        $warehouseIds = $item->details->pluck('warehouse_id')->filter()->toArray();
+        $branchIds = $item->details->pluck('branch_id')->filter()->toArray();
 
-        return $user->warehouses->whereIn('warehouse_id', $warehouseIds)->isNotEmpty();
+        return $user->branches->whereIn('branch_id', $branchIds)->isNotEmpty();
     }
 
     public function create(User $user): bool
@@ -32,7 +32,7 @@ class ItemPolicy
         return $user->can('item.create');
     }
 
-    public function update(User $user, ItemHeader $item): bool
+    public function update(User $user, MasterItem $item): bool
     {
         if (! $user->can('item.edit')) {
             return false;
@@ -42,12 +42,12 @@ class ItemPolicy
             return true;
         }
 
-        $warehouseIds = $item->details->pluck('warehouse_id')->filter()->toArray();
+        $branchIds = $item->details->pluck('branch_id')->filter()->toArray();
 
-        return $user->warehouses->whereIn('warehouse_id', $warehouseIds)->isNotEmpty();
+        return $user->branches->whereIn('branch_id', $branchIds)->isNotEmpty();
     }
 
-    public function delete(User $user, ItemHeader $item): bool
+    public function delete(User $user, MasterItem $item): bool
     {
         if (! $user->can('item.delete')) {
             return false;
@@ -57,9 +57,9 @@ class ItemPolicy
             return true;
         }
 
-        $warehouseIds = $item->details->pluck('warehouse_id')->filter()->toArray();
+        $branchIds = $item->details->pluck('branch_id')->filter()->toArray();
 
-        return $user->warehouses->whereIn('warehouse_id', $warehouseIds)->isNotEmpty();
+        return $user->branches->whereIn('branch_id', $branchIds)->isNotEmpty();
     }
 
     public function import(User $user): bool

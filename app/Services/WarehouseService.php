@@ -29,15 +29,14 @@ class WarehouseService extends BaseService
 
     public function create(array $data)
     {
-        $data['created_by'] = Auth::id();
         $warehouse = $this->repository->create($data);
 
         $this->logRepo->log(
             Auth::id(),
             'warehouse_created',
-            "Membuat gudang baru: {$warehouse->nama_gudang}",
+            "Membuat gudang baru: {$warehouse->whsl_name}",
             get_class($warehouse),
-            $warehouse->warehouse_id
+            $warehouse->whsl_id
         );
 
         return $warehouse;
@@ -45,8 +44,6 @@ class WarehouseService extends BaseService
 
     public function update($warehouse, array $data): bool
     {
-        $data['updated_by'] = Auth::id();
-
         return $this->repository->update($warehouse, $data);
     }
 

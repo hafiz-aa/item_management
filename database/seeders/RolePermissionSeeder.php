@@ -68,7 +68,10 @@ class RolePermissionSeeder extends Seeder
         $superAdminUser = User::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
-                'name' => 'Super Admin',
+                'users_name' => 'Super Admin',
+                'users_names' => 'Super Admin',
+                'users_code' => 'ADM001',
+                'users_password' => '',
                 'password' => Hash::make('admin123'),
                 'email_verified_at' => now(),
                 'is_active' => true,
@@ -79,7 +82,10 @@ class RolePermissionSeeder extends Seeder
         $adminGudangUser = User::firstOrCreate(
             ['email' => 'admin@gudang.com'],
             [
-                'name' => 'Admin Gudang',
+                'users_name' => 'Admin Gudang',
+                'users_names' => 'Admin Gudang',
+                'users_code' => 'ADM002',
+                'users_password' => '',
                 'password' => Hash::make('admin123'),
                 'email_verified_at' => now(),
                 'is_active' => true,
@@ -90,7 +96,10 @@ class RolePermissionSeeder extends Seeder
         $staffUser = User::firstOrCreate(
             ['email' => 'staff@gudang.com'],
             [
-                'name' => 'Staff Gudang',
+                'users_name' => 'Staff Gudang',
+                'users_names' => 'Staff Gudang',
+                'users_code' => 'STF001',
+                'users_password' => '',
                 'password' => Hash::make('staff123'),
                 'email_verified_at' => now(),
                 'is_active' => true,

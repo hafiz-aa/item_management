@@ -12,38 +12,43 @@
             @csrf
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label for="item_code" class="form-label">Kode Item <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('item_code') is-invalid @enderror" id="item_code" name="item_code" value="{{ old('item_code') }}" required>
-                    @error('item_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="masti_code" class="form-label">Kode Item <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control @error('masti_code') is-invalid @enderror" id="masti_code" name="masti_code" value="{{ old('masti_code') }}" required>
+                    @error('masti_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-4">
-                    <label for="item_description" class="form-label">Deskripsi Item</label>
-                    <input type="text" class="form-control @error('item_description') is-invalid @enderror" id="item_description" name="item_description" value="{{ old('item_description') }}">
-                    @error('item_description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="masti_name" class="form-label">Deskripsi Item</label>
+                    <input type="text" class="form-control @error('masti_name') is-invalid @enderror" id="masti_name" name="masti_name" value="{{ old('masti_name') }}">
+                    @error('masti_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-2">
-                    <label for="capacity" class="form-label">Kapasitas <span class="text-danger">*</span></label>
-                    <input type="number" step="0.01" class="form-control @error('capacity') is-invalid @enderror" id="capacity" name="capacity" value="{{ old('capacity', 0) }}" required>
-                    @error('capacity') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="masti_capacity" class="form-label">Kapasitas <span class="text-danger">*</span></label>
+                    <input type="number" step="0.01" class="form-control @error('masti_capacity') is-invalid @enderror" id="masti_capacity" name="masti_capacity" value="{{ old('masti_capacity', 0) }}" required>
+                    @error('masti_capacity') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-2">
-                    <label for="uom" class="form-label">UOM <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('uom') is-invalid @enderror" id="uom" name="uom" value="{{ old('uom', 'Kg') }}" required>
-                    @error('uom') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="uom_id_1" class="form-label">UOM <span class="text-danger">*</span></label>
+                    <select class="form-select @error('uom_id_1') is-invalid @enderror" id="uom_id_1" name="uom_id_1" required>
+                        <option value="">-- Pilih UoM --</option>
+                        @foreach($uoms as $u)
+                            <option value="{{ $u->uom_id }}" {{ old('uom_id_1') == $u->uom_id ? 'selected' : '' }}>{{ $u->uom_code }} - {{ $u->uom_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('uom_id_1') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
             <div class="row g-3 mt-2">
                 <div class="col-md-4">
-                    <label for="category_id" class="form-label">Kategori</label>
-                    <select class="form-select @error('category_id') is-invalid @enderror" id="category_id" name="category_id">
+                    <label for="cati_id" class="form-label">Kategori</label>
+                    <select class="form-select @error('cati_id') is-invalid @enderror" id="cati_id" name="cati_id">
                         <option value="">-- Pilih Kategori --</option>
                         @foreach($categories as $cat)
-                            <option value="{{ $cat->category_id }}" {{ old('category_id') == $cat->category_id ? 'selected' : '' }}>
-                                {{ $cat->category_code }} - {{ $cat->category_name }}
+                            <option value="{{ $cat->cati_id }}" {{ old('cati_id') == $cat->cati_id ? 'selected' : '' }}>
+                                {{ $cat->cati_code }} - {{ $cat->cati_name }}
                             </option>
                         @endforeach
                     </select>
-                    @error('category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('cati_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
             <div class="mt-4 d-flex gap-2">

@@ -44,13 +44,13 @@
                     @error('roles') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-6">
-                    <label for="warehouses" class="form-label">Warehouse Access</label>
-                    <select class="form-select @error('warehouses') is-invalid @enderror" id="warehouses" name="warehouses[]" multiple size="4">
-                        @foreach($warehouses as $w)
-                            <option value="{{ $w->warehouse_id }}" {{ (old('warehouses') && in_array($w->warehouse_id, old('warehouses'))) ? 'selected' : '' }}>{{ $w->nama_gudang }}</option>
+                    <label for="branches" class="form-label">Branch Access</label>
+                    <select class="form-select @error('branches') is-invalid @enderror" id="branches" name="branches[]" multiple size="4">
+                        @foreach($branches as $b)
+                            <option value="{{ $b->branch_id }}" {{ (old('branches') && in_array($b->branch_id, old('branches'))) ? 'selected' : '' }}>{{ $b->branch_code }} - {{ $b->branch_name }}</option>
                         @endforeach
                     </select>
-                    @error('warehouses') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('branches') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
             <div class="mt-4 d-flex gap-2">

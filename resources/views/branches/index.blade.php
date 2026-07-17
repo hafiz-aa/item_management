@@ -74,17 +74,6 @@
                     <a href="{{ route('branches.index') }}" class="btn btn-sm btn-secondary w-100"><i
                             class="bi bi-x-lg"></i></a>
                 </div>
-                <div class="col-md-4 text-end">
-                    @if(! empty($filters['trashed']))
-                        <a href="{{ route('branches.index', ['search' => $filters['search'] ?? '']) }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-eye"></i> View Active
-                        </a>
-                    @else
-                        <a href="{{ route('branches.index', ['trashed' => 1, 'search' => $filters['search'] ?? '']) }}" class="btn btn-sm btn-outline-danger">
-                            <i class="bi bi-trash"></i> View Trashed
-                        </a>
-                    @endif
-                </div>
             </form>
 
             <div class="table-responsive">
@@ -115,30 +104,19 @@
                                 <td><span class="badge bg-info">{{ $branch->warehouses_count }}</span></td>
                                 <td>
                                     <div class="d-flex gap-1">
-                                        @if($branch->trashed())
-                                            @can('branch.delete')
-                                                <form action="{{ route('branches.restore', $branch->branch_id) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-success" title="Restore">
-                                                        <i class="bi bi-arrow-counterclockwise"></i>
-                                                    </button>
-                                                </form>
-                                            @endcan
-                                        @else
-                                            @can('branch.edit')
-                                                <a href="{{ route('branches.edit', $branch) }}" class="btn btn-sm btn-warning text-white" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                            @endcan
-                                            @can('branch.delete')
-                                                <form action="{{ route('branches.destroy', $branch) }}" method="POST">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            @endcan
-                                        @endif
+                                        @can('branch.edit')
+                                            <a href="{{ route('branches.edit', $branch) }}" class="btn btn-sm btn-warning text-white" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        @endcan
+                                        @can('branch.delete')
+                                            <form action="{{ route('branches.destroy', $branch) }}" method="POST">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

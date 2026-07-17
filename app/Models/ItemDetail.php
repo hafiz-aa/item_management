@@ -3,57 +3,56 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ItemDetail extends Model
 {
-    use SoftDeletes;
-
-    protected $table = 'item_details';
+    protected $table = 'item_detail';
 
     protected $primaryKey = 'itemd_id';
 
+    public $timestamps = false;
+
     protected $fillable = [
-        'itemh_id',
-        'company_id',
+        'comp_id',
         'branch_id',
-        'whsl_id',
-        'acquired_date',
+        'masti_id',
         'itemd_code',
-        'qty',
-        'status',
-        'position_id',
-        'is_broken',
-        'is_dispossed',
-        'is_writeoff',
-        'warehouse_id',
+        'itemd_month',
+        'itemd_year',
+        'itemd_weight',
+        'itemd_serial_no',
+        'itemd_capacity',
+        'uom_id',
+        'itemd_acquired_date',
+        'vend_id',
+        'itemd_qty',
+        'itemd_status',
+        'itemd_position',
+        'itemd_is_broken',
+        'itemd_is_wo',
+        'itemd_is_dispossed',
+        'whsl_id',
         'original_branch_id',
-        'created_by',
-        'updated_by',
     ];
 
     protected function casts(): array
     {
         return [
-            'acquired_date' => 'date',
-            'qty' => 'integer',
-            'is_broken' => 'boolean',
-            'is_dispossed' => 'boolean',
-            'is_writeoff' => 'boolean',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-            'deleted_at' => 'datetime',
+            'itemd_acquired_date' => 'date',
+            'itemd_qty' => 'double',
+            'itemd_weight' => 'double',
+            'itemd_capacity' => 'double',
         ];
     }
 
     public function header()
     {
-        return $this->belongsTo(ItemHeader::class, 'itemh_id');
+        return $this->belongsTo(MasterItem::class, 'masti_id', 'masti_id');
     }
 
     public function warehouse()
     {
-        return $this->belongsTo(Warehouse::class, 'warehouse_id', 'warehouse_id');
+        return $this->belongsTo(Warehouse::class, 'whsl_id', 'whsl_id');
     }
 
     public function branch()
@@ -66,23 +65,13 @@ class ItemDetail extends Model
         return $this->belongsTo(Branch::class, 'original_branch_id', 'branch_id');
     }
 
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function updater()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
-
     public function scopeActive($query)
     {
-        return $query->where('status', 'Aktif');
+        return $query->where('itemd_status', '0');
     }
 
     public function scopeByWarehouse($query, $warehouseId)
     {
-        return $query->where('warehouse_id', $warehouseId);
+        return $query->where('whsl_id', $warehouseId);
     }
 }

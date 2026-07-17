@@ -14,7 +14,7 @@ class WarehouseRepository extends BaseRepository
 
     public function getActive(): Collection
     {
-        return $this->model->newQuery()->where('status', 'Aktif')->get();
+        return $this->model->newQuery()->where('whsl_status', '0')->get();
     }
 
     public function getForUser($user): Collection
@@ -23,6 +23,8 @@ class WarehouseRepository extends BaseRepository
             return $this->model->newQuery()->get();
         }
 
-        return $user->warehouses;
+        $branchIds = $user->branches->pluck('branch_id')->toArray();
+
+        return $this->model->newQuery()->whereIn('branch_id', $branchIds)->get();
     }
 }

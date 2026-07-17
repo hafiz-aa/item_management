@@ -21,8 +21,7 @@ class BranchController extends Controller
 
     public function index(Request $request): View
     {
-        $filters = $request->only(['search', 'trashed', 'per_page']);
-
+        $filters = $request->only(['search', 'per_page']);
         $branches = $this->branchService->search($filters);
 
         return view('branches.index', compact('branches', 'filters'));
@@ -37,7 +36,7 @@ class BranchController extends Controller
     {
         $data = $request->validated();
         $data['branch_id'] = Branch::max('branch_id') + 1;
-        $data['comp_id'] = $data['comp_id'] ?? 1;
+        $data['comp_id'] = $data['comp_id'] ?? 0;
 
         $this->branchService->create($data);
 
@@ -64,13 +63,5 @@ class BranchController extends Controller
 
         return redirect()->route('branches.index')
             ->with('success', 'Branch berhasil dihapus.');
-    }
-
-    public function restore(int $id): RedirectResponse
-    {
-        $this->branchService->restore($id);
-
-        return redirect()->route('branches.index')
-            ->with('success', 'Branch berhasil dipulihkan.');
     }
 }

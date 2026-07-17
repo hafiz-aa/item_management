@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Models\Branch;
-use App\Models\ItemHeader;
+use App\Models\ItemCategory;
+use App\Models\MasterItem;
+use App\Models\Uom;
 use App\Services\ItemService;
 use App\Services\WarehouseService;
 use Illuminate\Http\RedirectResponse;
@@ -27,13 +29,13 @@ class ItemController extends Controller
     public function index(Request $request): View
     {
         $filters = $request->only([
-            'search', 'warehouse_id', 'status', 'cat_id',
+            'search', 'whsl_id', 'status', 'cati_id',
             'sort_field', 'sort_order', 'per_page',
         ]);
 
         $user = $request->user();
         if (! $user->hasRole('Super Admin')) {
-            $filters['warehouse_ids'] = $user->warehouses->pluck('warehouse_id')->toArray();
+            $filters['warehouse_ids'] = $user->branches->pluck('branch_id')->toArray();
         }
 
         $items = $this->itemService->search($filters);
@@ -47,8 +49,10 @@ class ItemController extends Controller
     {
         $warehouses = $this->warehouseService->getActive();
         $branches = Branch::orderBy('branch_code')->get();
+        $categories = ItemCategory::orderBy('cati_code')->get();
+        $uoms = Uom::orderBy('uom_code')->get();
 
-        return view('items.create', compact('warehouses', 'branches'));
+        return view('items.create', compact('warehouses', 'branches', 'categories', 'uoms'));
     }
 
     public function store(StoreItemRequest $request): RedirectResponse
@@ -59,23 +63,25 @@ class ItemController extends Controller
             ->with('success', 'Item berhasil ditambahkan.');
     }
 
-    public function show(ItemHeader $item): View
+    public function show(MasterItem $item): View
     {
-        $item->load(['details.warehouse', 'details.branch', 'details.originalBranch', 'creator', 'updater', 'details.creator', 'details.updater']);
+        $item->load(['details.warehouse', 'details.branch', 'details.originalBranch', 'category', 'uom']);
 
         return view('items.show', compact('item'));
     }
 
-    public function edit(ItemHeader $item): View
+    public function edit(MasterItem $item): View
     {
         $warehouses = $this->warehouseService->getActive();
         $branches = Branch::orderBy('branch_code')->get();
+        $categories = ItemCategory::orderBy('cati_code')->get();
+        $uoms = Uom::orderBy('uom_code')->get();
         $item->load('details');
 
-        return view('items.edit', compact('item', 'warehouses', 'branches'));
+        return view('items.edit', compact('item', 'warehouses', 'branches', 'categories', 'uoms'));
     }
 
-    public function update(UpdateItemRequest $request, ItemHeader $item): RedirectResponse
+    public function update(UpdateItemRequest $request, MasterItem $item): RedirectResponse
     {
         $this->itemService->update($item, $request->validated());
 
@@ -83,7 +89,7 @@ class ItemController extends Controller
             ->with('success', 'Item berhasil diupdate.');
     }
 
-    public function destroy(ItemHeader $item): RedirectResponse
+    public function destroy(MasterItem $item): RedirectResponse
     {
         $this->itemService->delete($item);
 
@@ -93,7 +99,7 @@ class ItemController extends Controller
 
     public function bulkDelete(Request $request): RedirectResponse
     {
-        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:item_headers,itemh_id']);
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'exists:master_item,masti_id']);
         $this->itemService->bulkDelete($request->ids);
 
         return redirect()->route('items.index')

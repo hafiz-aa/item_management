@@ -23,7 +23,7 @@ class WarehouseController extends Controller
     public function index(Request $request): View
     {
         $warehouses = $this->warehouseService->getForUser($request->user())
-            ->where('tipe', 'Kantor Pusat')
+            ->where('whsl_type', '0')
             ->values()
             ->load('children.children.children');
 
@@ -33,8 +33,8 @@ class WarehouseController extends Controller
     public function create(Request $request): View
     {
         $selectedParent = null;
-        if ($request->filled('parent_id')) {
-            $selectedParent = Warehouse::find($request->parent_id);
+        if ($request->filled('whsl_parent_id')) {
+            $selectedParent = Warehouse::find($request->whsl_parent_id);
         }
 
         $parentWarehouses = Warehouse::active()->get();
@@ -47,8 +47,8 @@ class WarehouseController extends Controller
     {
         $warehouse = $this->warehouseService->create($request->validated());
 
-        if ($warehouse->parent_id) {
-            return redirect()->route('warehouses.edit', $warehouse->parent_id)
+        if ($warehouse->whsl_parent_id) {
+            return redirect()->route('warehouses.edit', $warehouse->whsl_parent_id)
                 ->with('success', 'Data kantor cabang berhasil ditambahkan.');
         }
 
@@ -60,8 +60,8 @@ class WarehouseController extends Controller
     {
         $warehouse->load('children.children');
         $parentWarehouses = Warehouse::active()
-            ->where('warehouse_id', '!=', $warehouse->warehouse_id)
-            ->whereNotIn('warehouse_id', $warehouse->children->pluck('warehouse_id'))
+            ->where('whsl_id', '!=', $warehouse->whsl_id)
+            ->whereNotIn('whsl_id', $warehouse->children->pluck('whsl_id'))
             ->get();
         $branches = Branch::orderBy('branch_code')->get();
 
@@ -72,8 +72,8 @@ class WarehouseController extends Controller
     {
         $this->warehouseService->update($warehouse, $request->validated());
 
-        if ($warehouse->parent_id) {
-            return redirect()->route('warehouses.edit', $warehouse->parent_id)
+        if ($warehouse->whsl_parent_id) {
+            return redirect()->route('warehouses.edit', $warehouse->whsl_parent_id)
                 ->with('success', 'Data kantor cabang berhasil diupdate.');
         }
 
@@ -83,7 +83,7 @@ class WarehouseController extends Controller
 
     public function destroy(Warehouse $warehouse): RedirectResponse
     {
-        $parentId = $warehouse->parent_id;
+        $parentId = $warehouse->whsl_parent_id;
         $this->warehouseService->delete($warehouse);
 
         if ($parentId) {

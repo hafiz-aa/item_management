@@ -14,21 +14,17 @@ class ItemCategoryRepository extends BaseRepository
 
     public function search(array $filters = []): LengthAwarePaginator
     {
-        $query = $this->model->newQuery()->withCount('itemDescriptions');
+        $query = $this->model->newQuery()->withCount('masterItems');
 
         if (! empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
-                $q->where('category_code', 'like', "%{$search}%")
-                    ->orWhere('category_name', 'like', "%{$search}%");
+                $q->where('cati_code', 'like', "%{$search}%")
+                    ->orWhere('cati_name', 'like', "%{$search}%");
             });
         }
 
-        if (! empty($filters['trashed'])) {
-            $query->onlyTrashed();
-        }
-
-        $query->orderBy('category_id', 'asc');
+        $query->orderBy('cati_id', 'asc');
 
         return $query->paginate($filters['per_page'] ?? 15);
     }

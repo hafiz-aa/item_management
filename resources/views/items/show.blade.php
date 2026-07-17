@@ -5,7 +5,7 @@
 @section('content')
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h5 class="fw-bold mb-0">Item Detail: {{ $item->item_code }}</h5>
+            <h5 class="fw-bold mb-0">Item Detail: {{ $item->masti_code }}</h5>
             <div>
                 @can('item.edit')
                     <a href="{{ route('items.edit', $item) }}" class="btn btn-warning btn-sm text-white"><i
@@ -21,15 +21,15 @@
                     <table class="table table-borderless">
                         <tr>
                             <th style="width:180px" class="text-muted">Item Code</th>
-                            <td class="fw-bold">{{ $item->item_code }}</td>
+                            <td class="fw-bold">{{ $item->masti_code }}</td>
                         </tr>
                         <tr>
                             <th class="text-muted">Item Name</th>
-                            <td>{{ $item->item_name ?? '-' }}</td>
+                            <td>{{ $item->masti_name ?? '-' }}</td>
                         </tr>
                         <tr>
                             <th class="text-muted">Category</th>
-                            <td><span class="badge bg-info">{{ $item->cat_id ?? '-' }}</span></td>
+                            <td><span class="badge bg-info">{{ $item->category->cati_name ?? '-' }}</span></td>
                         </tr>
                     </table>
                 </div>
@@ -37,15 +37,11 @@
                     <table class="table table-borderless">
                         <tr>
                             <th style="width:180px" class="text-muted">Capacity</th>
-                            <td>{{ number_format($item->capacity, 2) }} {{ $item->uom_id_1 }}</td>
+                            <td>{{ number_format($item->masti_capacity, 2) }} {{ $item->uom?->uom_name ?? $item->uom_id_1 }}</td>
                         </tr>
                         <tr>
-                            <th class="text-muted">UoM 2</th>
-                            <td>{{ $item->uom_id_2 ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-muted">Company ID</th>
-                            <td>{{ $item->company_id ?? '-' }}</td>
+                            <th class="text-muted">UoM</th>
+                            <td>{{ $item->uom?->uom_name ?? '-' }}</td>
                         </tr>
                     </table>
                 </div>
@@ -65,15 +61,15 @@
                                     </tr>
                                     <tr>
                                         <th class="text-muted">Qty</th>
-                                        <td>{{ $detail->qty }}</td>
+                                        <td>{{ $detail->itemd_qty }}</td>
                                     </tr>
                                     <tr>
                                         <th class="text-muted">Status</th>
-                                        <td><span class="badge bg-{{ $detail->status == 'Aktif' ? 'success' : 'secondary' }}">{{ $detail->status }}</span></td>
+                                        <td><span class="badge bg-{{ $detail->itemd_status == '0' ? 'success' : 'secondary' }}">{{ $detail->itemd_status == '0' ? 'Aktif' : 'Tidak Aktif' }}</span></td>
                                     </tr>
                                     <tr>
                                         <th class="text-muted">Acquired Date</th>
-                                        <td>{{ $detail->acquired_date?->format('d/m/Y') ?? '-' }}</td>
+                                        <td>{{ $detail->itemd_acquired_date?->format('d/m/Y') ?? '-' }}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -81,19 +77,19 @@
                                 <table class="table table-borderless">
                                     <tr>
                                         <th style="width:180px" class="text-muted">Warehouse</th>
-                                        <td>{{ $detail->warehouse?->nama_gudang ?? '-' }}</td>
+                                        <td>{{ $detail->warehouse?->whsl_name ?? '-' }}</td>
                                     </tr>
                                     <tr>
                                         <th class="text-muted">Broken</th>
-                                        <td>{!! $detail->is_broken ? '<span class="badge bg-danger">Ya</span>' : '<span class="badge bg-success">Tidak</span>' !!}</td>
+                                        <td>{!! $detail->itemd_is_broken ? '<span class="badge bg-danger">Ya</span>' : '<span class="badge bg-success">Tidak</span>' !!}</td>
                                     </tr>
                                     <tr>
                                         <th class="text-muted">Disposed</th>
-                                        <td>{!! $detail->is_dispossed ? '<span class="badge bg-warning text-dark">Ya</span>' : '<span class="badge bg-success">Tidak</span>' !!}</td>
+                                        <td>{!! $detail->itemd_is_dispossed ? '<span class="badge bg-warning text-dark">Ya</span>' : '<span class="badge bg-success">Tidak</span>' !!}</td>
                                     </tr>
                                     <tr>
                                         <th class="text-muted">Write Off</th>
-                                        <td>{!! $detail->is_writeoff ? '<span class="badge bg-danger">Ya</span>' : '<span class="badge bg-success">Tidak</span>' !!}</td>
+                                        <td>{!! $detail->itemd_is_wo ? '<span class="badge bg-danger">Ya</span>' : '<span class="badge bg-success">Tidak</span>' !!}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -106,8 +102,8 @@
                                         <td>{{ $detail->branch?->branch_code ? $detail->branch->branch_code . ' - ' . $detail->branch->branch_name : '-' }}</td>
                                     </tr>
                                     <tr>
-                                        <th class="text-muted">Position ID</th>
-                                        <td>{{ $detail->position_id ?? '-' }}</td>
+                                        <th class="text-muted">Position</th>
+                                        <td>{{ $detail->itemd_position ?? '-' }}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -116,14 +112,6 @@
                                     <tr>
                                         <th style="width:180px" class="text-muted">Branch Original</th>
                                         <td>{{ $detail->originalBranch?->branch_code ? $detail->originalBranch->branch_code . ' - ' . $detail->originalBranch->branch_name : '-' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-muted">Dibuat Oleh</th>
-                                        <td>{{ $detail->creator?->name ?? 'System' }} - {{ $detail->created_at?->format('d/m/Y H:i') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-muted">Diupdate Oleh</th>
-                                        <td>{{ $detail->updater?->name ?? '-' }} - {{ $detail->updated_at?->format('d/m/Y H:i') }}</td>
                                     </tr>
                                 </table>
                             </div>
@@ -135,19 +123,8 @@
             @endforelse
 
             <hr>
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <table class="table table-borderless">
-                        <tr>
-                            <th style="width:180px" class="text-muted">Dibuat Oleh</th>
-                            <td>{{ $item->creator?->name ?? 'System' }} - {{ $item->created_at?->format('d/m/Y H:i') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-muted">Diupdate Oleh</th>
-                            <td>{{ $item->updater?->name ?? '-' }} - {{ $item->updated_at?->format('d/m/Y H:i') }}</td>
-                        </tr>
-                    </table>
-                </div>
+            <div class="mt-3">
+                <a href="{{ route('items.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to List</a>
             </div>
         </div>
     </div>

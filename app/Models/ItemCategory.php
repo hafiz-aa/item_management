@@ -3,45 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ItemCategory extends Model
 {
-    use SoftDeletes;
+    protected $table = 'category_item';
 
-    protected $table = 'item_categories';
+    protected $primaryKey = 'cati_id';
 
-    protected $primaryKey = 'category_id';
+    public $timestamps = false;
 
     protected $fillable = [
-        'category_code',
-        'category_name',
-        'description',
-        'created_by',
-        'updated_by',
+        'comp_id',
+        'cati_code',
+        'cati_name',
+        'cati_notes',
     ];
 
-    protected function casts(): array
+    public function masterItems()
     {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-            'deleted_at' => 'datetime',
-        ];
-    }
-
-    public function itemDescriptions()
-    {
-        return $this->hasMany(ItemDescription::class, 'category_id');
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function updater()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->hasMany(MasterItem::class, 'cati_id');
     }
 }

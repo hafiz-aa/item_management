@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreItemDescriptionRequest;
 use App\Http\Requests\UpdateItemDescriptionRequest;
 use App\Models\ItemCategory;
-use App\Models\ItemDescription;
+use App\Models\MasterItem;
+use App\Models\Uom;
 use App\Services\ItemDescriptionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,8 +23,7 @@ class ItemDescriptionController extends Controller
 
     public function index(Request $request): View
     {
-        $filters = $request->only(['search', 'trashed', 'per_page']);
-
+        $filters = $request->only(['search', 'per_page']);
         $itemDescriptions = $this->itemDescriptionService->search($filters);
 
         return view('item-descriptions.index', compact('itemDescriptions', 'filters'));
@@ -31,9 +31,10 @@ class ItemDescriptionController extends Controller
 
     public function create(): View
     {
-        $categories = ItemCategory::orderBy('category_code')->get();
+        $categories = ItemCategory::orderBy('cati_code')->get();
+        $uoms = Uom::orderBy('uom_code')->get();
 
-        return view('item-descriptions.create', compact('categories'));
+        return view('item-descriptions.create', compact('categories', 'uoms'));
     }
 
     public function store(StoreItemDescriptionRequest $request): RedirectResponse
@@ -44,14 +45,15 @@ class ItemDescriptionController extends Controller
             ->with('success', 'Item description berhasil ditambahkan.');
     }
 
-    public function edit(ItemDescription $itemDescription): View
+    public function edit(MasterItem $itemDescription): View
     {
-        $categories = ItemCategory::orderBy('category_code')->get();
+        $categories = ItemCategory::orderBy('cati_code')->get();
+        $uoms = Uom::orderBy('uom_code')->get();
 
-        return view('item-descriptions.edit', ['itemDescription' => $itemDescription, 'categories' => $categories]);
+        return view('item-descriptions.edit', ['itemDescription' => $itemDescription, 'categories' => $categories, 'uoms' => $uoms]);
     }
 
-    public function update(UpdateItemDescriptionRequest $request, ItemDescription $itemDescription): RedirectResponse
+    public function update(UpdateItemDescriptionRequest $request, MasterItem $itemDescription): RedirectResponse
     {
         $this->itemDescriptionService->update($itemDescription, $request->validated());
 
@@ -59,19 +61,11 @@ class ItemDescriptionController extends Controller
             ->with('success', 'Item description berhasil diupdate.');
     }
 
-    public function destroy(ItemDescription $itemDescription): RedirectResponse
+    public function destroy(MasterItem $itemDescription): RedirectResponse
     {
         $this->itemDescriptionService->delete($itemDescription);
 
         return redirect()->route('item-descriptions.index')
             ->with('success', 'Item description berhasil dihapus.');
-    }
-
-    public function restore(int $id): RedirectResponse
-    {
-        $this->itemDescriptionService->restore($id);
-
-        return redirect()->route('item-descriptions.index')
-            ->with('success', 'Item description berhasil dipulihkan.');
     }
 }

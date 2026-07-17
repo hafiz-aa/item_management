@@ -2,23 +2,10 @@
 
 @section('title', 'Edit Item')
 
-@push('scripts')
-<script>
-$(document).ready(function() {
-    $('#branch_id').on('change', function() {
-        var $orig = $('#original_branch_id');
-        if (!$orig.val()) {
-            $orig.val($(this).val());
-        }
-    });
-});
-</script>
-@endpush
-
 @section('content')
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white py-3">
-        <h5 class="fw-bold mb-0">Edit Item: {{ $item->item_code }}</h5>
+        <h5 class="fw-bold mb-0">Edit Item: {{ $item->masti_code }}</h5>
     </div>
     <div class="card-body">
         <form method="POST" action="{{ route('items.update', $item) }}">
@@ -29,50 +16,39 @@ $(document).ready(function() {
             <h6 class="fw-bold text-primary mb-3">Header Information</h6>
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label for="item_code" class="form-label">Item Code <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('item_code') is-invalid @enderror" id="item_code" name="item_code" value="{{ old('item_code', $item->item_code) }}" required>
-                    @error('item_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="masti_code" class="form-label">Item Code <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control @error('masti_code') is-invalid @enderror" id="masti_code" name="masti_code" value="{{ old('masti_code', $item->masti_code) }}" required>
+                    @error('masti_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-3">
-                    <label for="item_name" class="form-label">Item Name</label>
-                    <input type="text" class="form-control @error('item_name') is-invalid @enderror" id="item_name" name="item_name" value="{{ old('item_name', $item->item_name) }}">
-                    @error('item_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="masti_name" class="form-label">Item Name</label>
+                    <input type="text" class="form-control @error('masti_name') is-invalid @enderror" id="masti_name" name="masti_name" value="{{ old('masti_name', $item->masti_name) }}">
+                    @error('masti_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-2">
-                    <label for="capacity" class="form-label">Capacity</label>
-                    <input type="number" step="0.01" class="form-control @error('capacity') is-invalid @enderror" id="capacity" name="capacity" value="{{ old('capacity', $item->capacity) }}">
-                    @error('capacity') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="masti_capacity" class="form-label">Capacity</label>
+                    <input type="number" step="0.01" class="form-control @error('masti_capacity') is-invalid @enderror" id="masti_capacity" name="masti_capacity" value="{{ old('masti_capacity', $item->masti_capacity) }}">
+                    @error('masti_capacity') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-2">
                     <label for="uom_id_1" class="form-label">UoM 1</label>
                     <select class="form-select @error('uom_id_1') is-invalid @enderror" id="uom_id_1" name="uom_id_1">
-                        <option value="Kg" {{ (old('uom_id_1', $item->uom_id_1)) == 'Kg' ? 'selected' : '' }}>Kg</option>
-                        <option value="Gram" {{ old('uom_id_1', $item->uom_id_1) == 'Gram' ? 'selected' : '' }}>Gram</option>
-                        <option value="Liter" {{ old('uom_id_1', $item->uom_id_1) == 'Liter' ? 'selected' : '' }}>Liter</option>
-                        <option value="M3" {{ old('uom_id_1', $item->uom_id_1) == 'M3' ? 'selected' : '' }}>M3</option>
+                        <option value="">-- Pilih UoM --</option>
+                        @foreach($uoms as $u)
+                            <option value="{{ $u->uom_id }}" {{ (old('uom_id_1', $item->uom_id_1)) == $u->uom_id ? 'selected' : '' }}>{{ $u->uom_code }} - {{ $u->uom_name }}</option>
+                        @endforeach
                     </select>
                     @error('uom_id_1') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-2">
-                    <label for="uom_id_2" class="form-label">UoM 2</label>
-                    <input type="text" class="form-control @error('uom_id_2') is-invalid @enderror" id="uom_id_2" name="uom_id_2" value="{{ old('uom_id_2', $item->uom_id_2) }}">
-                    @error('uom_id_2') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                </div>
-            </div>
-
-            <div class="row g-3 mt-2">
-                <div class="col-md-3">
-                    <label for="cat_id" class="form-label">Category</label>
-                    <input type="text" class="form-control @error('cat_id') is-invalid @enderror" id="cat_id" name="cat_id" value="{{ old('cat_id', $item->cat_id) }}" list="catList">
-                    <datalist id="catList">
-                        <option value="Oksigen"><option value="Nitrogen"><option value="Asetilen"><option value="CO2"><option value="LPG"><option value="Hidrogen">
-                    </datalist>
-                    @error('cat_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                </div>
-                <div class="col-md-3">
-                    <label for="company_id" class="form-label">Company ID</label>
-                    <input type="number" class="form-control @error('company_id') is-invalid @enderror" id="company_id" name="company_id" value="{{ old('company_id', $item->company_id) }}">
-                    @error('company_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="cati_id" class="form-label">Category</label>
+                    <select class="form-select @error('cati_id') is-invalid @enderror" id="cati_id" name="cati_id">
+                        <option value="">-- Pilih Kategori --</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->cati_id }}" {{ (old('cati_id', $item->cati_id)) == $cat->cati_id ? 'selected' : '' }}>{{ $cat->cati_code }} - {{ $cat->cati_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('cati_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
 
@@ -85,32 +61,32 @@ $(document).ready(function() {
                     @error('itemd_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-2">
-                    <label for="qty" class="form-label">Qty</label>
-                    <input type="number" class="form-control @error('qty') is-invalid @enderror" id="qty" name="qty" min="1" value="{{ old('qty', $detail?->qty ?? 1) }}">
-                    @error('qty') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="itemd_qty" class="form-label">Qty</label>
+                    <input type="number" class="form-control @error('itemd_qty') is-invalid @enderror" id="itemd_qty" name="itemd_qty" min="1" value="{{ old('itemd_qty', $detail?->itemd_qty ?? 1) }}">
+                    @error('itemd_qty') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-2">
-                    <label for="acquired_date" class="form-label">Acquired Date</label>
-                    <input type="date" class="form-control @error('acquired_date') is-invalid @enderror" id="acquired_date" name="acquired_date" value="{{ old('acquired_date', $detail?->acquired_date?->format('Y-m-d')) }}">
-                    @error('acquired_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="itemd_acquired_date" class="form-label">Acquired Date</label>
+                    <input type="date" class="form-control @error('itemd_acquired_date') is-invalid @enderror" id="itemd_acquired_date" name="itemd_acquired_date" value="{{ old('itemd_acquired_date', $detail?->itemd_acquired_date?->format('Y-m-d')) }}">
+                    @error('itemd_acquired_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-2">
-                    <label for="warehouse_id" class="form-label">Warehouse</label>
-                    <select class="form-select @error('warehouse_id') is-invalid @enderror" id="warehouse_id" name="warehouse_id">
+                    <label for="whsl_id" class="form-label">Warehouse</label>
+                    <select class="form-select @error('whsl_id') is-invalid @enderror" id="whsl_id" name="whsl_id">
                         <option value="">Pilih Gudang</option>
                         @foreach($warehouses as $w)
-                            <option value="{{ $w->warehouse_id }}" {{ (old('warehouse_id', $detail?->warehouse_id)) == $w->warehouse_id ? 'selected' : '' }}>{{ $w->nama_gudang }}</option>
+                            <option value="{{ $w->whsl_id }}" {{ (old('whsl_id', $detail?->whsl_id)) == $w->whsl_id ? 'selected' : '' }}>{{ $w->whsl_name }}</option>
                         @endforeach
                     </select>
-                    @error('warehouse_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('whsl_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-3">
-                    <label for="status" class="form-label">Status</label>
-                    <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
-                        <option value="Aktif" {{ (old('status', $detail?->status ?? 'Aktif')) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                        <option value="Tidak Aktif" {{ old('status', $detail?->status) == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                    <label for="itemd_status" class="form-label">Status</label>
+                    <select class="form-select @error('itemd_status') is-invalid @enderror" id="itemd_status" name="itemd_status">
+                        <option value="0" {{ (old('itemd_status', $detail?->itemd_status ?? '0')) == '0' ? 'selected' : '' }}>Aktif</option>
+                        <option value="1" {{ old('itemd_status', $detail?->itemd_status) == '1' ? 'selected' : '' }}>Tidak Aktif</option>
                     </select>
-                    @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('itemd_status') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
 
@@ -124,11 +100,6 @@ $(document).ready(function() {
                         @endforeach
                     </select>
                     @error('branch_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                </div>
-                <div class="col-md-3">
-                    <label for="position_id" class="form-label">Position ID</label>
-                    <input type="number" class="form-control @error('position_id') is-invalid @enderror" id="position_id" name="position_id" value="{{ old('position_id', $detail?->position_id) }}">
-                    @error('position_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-3">
                     <label for="original_branch_id" class="form-label">Branch Original</label>
@@ -145,16 +116,16 @@ $(document).ready(function() {
             <div class="row g-3 mt-2">
                 <div class="col-md-6">
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="is_broken" name="is_broken" value="1" {{ ($detail?->is_broken) ? 'checked' : '' }}>
-                        <label class="form-check-label" for="is_broken">Broken</label>
+                        <input class="form-check-input" type="checkbox" role="switch" id="itemd_is_broken" name="itemd_is_broken" value="1" {{ ($detail?->itemd_is_broken) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="itemd_is_broken">Broken</label>
                     </div>
                     <div class="form-check form-switch mt-2">
-                        <input class="form-check-input" type="checkbox" role="switch" id="is_dispossed" name="is_dispossed" value="1" {{ ($detail?->is_dispossed) ? 'checked' : '' }}>
-                        <label class="form-check-label" for="is_dispossed">Disposed</label>
+                        <input class="form-check-input" type="checkbox" role="switch" id="itemd_is_dispossed" name="itemd_is_dispossed" value="1" {{ ($detail?->itemd_is_dispossed) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="itemd_is_dispossed">Disposed</label>
                     </div>
                     <div class="form-check form-switch mt-2">
-                        <input class="form-check-input" type="checkbox" role="switch" id="is_writeoff" name="is_writeoff" value="1" {{ ($detail?->is_writeoff) ? 'checked' : '' }}>
-                        <label class="form-check-label" for="is_writeoff">Write Off</label>
+                        <input class="form-check-input" type="checkbox" role="switch" id="itemd_is_wo" name="itemd_is_wo" value="1" {{ ($detail?->itemd_is_wo) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="itemd_is_wo">Write Off</label>
                     </div>
                 </div>
             </div>

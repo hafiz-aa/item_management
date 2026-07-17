@@ -16,8 +16,8 @@ class ActivityLogRepository extends BaseRepository
     {
         $query = $this->model->newQuery()->with('user');
 
-        if (! empty($filters['type'])) {
-            $query->where('type', $filters['type']);
+        if (! empty($filters['action'])) {
+            $query->where('action', $filters['action']);
         }
 
         if (! empty($filters['user_id'])) {
@@ -41,17 +41,15 @@ class ActivityLogRepository extends BaseRepository
         return $query->paginate($filters['per_page'] ?? 15);
     }
 
-    public function log($userId, string $type, string $description, ?string $modelType = null, ?int $modelId = null, ?array $data = null): ActivityLog
+    public function log($userId, string $action, string $description, ?string $subjectType = null, ?int $subjectId = null, ?array $data = null): ActivityLog
     {
         return $this->model->create([
             'user_id' => $userId,
-            'type' => $type,
-            'model_type' => $modelType,
-            'model_id' => $modelId,
+            'action' => $action,
             'description' => $description,
-            'data' => $data,
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
+            'subject_type' => $subjectType,
+            'subject_id' => $subjectId,
+            'new_values' => $data,
         ]);
     }
 }

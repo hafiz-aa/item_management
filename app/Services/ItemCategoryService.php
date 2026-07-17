@@ -35,9 +35,9 @@ class ItemCategoryService extends BaseService
         $this->logRepo->log(
             Auth::id(),
             'item_category_created',
-            "Membuat item category baru: {$category->category_code}",
+            "Membuat item category baru: {$category->cati_code}",
             ItemCategory::class,
-            $category->category_id
+            $category->cati_id
         );
 
         return $category;
@@ -51,9 +51,9 @@ class ItemCategoryService extends BaseService
             $this->logRepo->log(
                 Auth::id(),
                 'item_category_updated',
-                "Mengupdate item category: {$category->category_code}",
+                "Mengupdate item category: {$category->cati_code}",
                 ItemCategory::class,
-                $category->category_id
+                $category->cati_id
             );
         }
 
@@ -62,7 +62,7 @@ class ItemCategoryService extends BaseService
 
     public function delete(ItemCategory $category): bool
     {
-        $code = $category->category_code;
+        $code = $category->cati_code;
         $deleted = $this->repository->delete($category);
 
         if ($deleted) {
@@ -71,7 +71,7 @@ class ItemCategoryService extends BaseService
                 'item_category_deleted',
                 "Menghapus item category: {$code}",
                 ItemCategory::class,
-                $category->category_id
+                $category->cati_id
             );
         }
 
@@ -80,19 +80,6 @@ class ItemCategoryService extends BaseService
 
     public function restore(int $id): bool
     {
-        $category = ItemCategory::onlyTrashed()->findOrFail($id);
-        $restored = $category->restore();
-
-        if ($restored) {
-            $this->logRepo->log(
-                Auth::id(),
-                'item_category_restored',
-                "Memulihkan item category: {$category->category_code}",
-                ItemCategory::class,
-                $category->category_id
-            );
-        }
-
-        return $restored;
+        return false;
     }
 }

@@ -17,18 +17,18 @@ class UpdateItemCategoryRequest extends FormRequest
         $categoryId = $this->route('itemCategory');
 
         return [
-            'category_code' => ['required', 'string', 'max:50', Rule::unique('item_categories', 'category_code')->ignore($categoryId, 'category_id')],
-            'category_name' => ['required', 'string', 'max:100'],
-            'description' => ['nullable', 'string'],
+            'cati_code' => ['required', 'string', 'max:50', Rule::unique('category_item', 'cati_code')->ignore($categoryId, 'cati_id')],
+            'cati_name' => ['required', 'string', 'max:100'],
+            'cati_notes' => ['nullable', 'string', 'max:255'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'category_code.required' => 'Kode kategori wajib diisi.',
-            'category_code.unique' => 'Kode kategori sudah digunakan.',
-            'category_name.required' => 'Nama kategori wajib diisi.',
+            'cati_code.required' => 'Kode kategori wajib diisi.',
+            'cati_code.unique' => 'Kode kategori sudah digunakan.',
+            'cati_name.required' => 'Nama kategori wajib diisi.',
         ];
     }
 }

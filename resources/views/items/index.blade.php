@@ -106,11 +106,11 @@
                         value="{{ $filters['search'] ?? '' }}">
                 </div>
                 <div class="col-md-2">
-                    <select name="warehouse_id" class="form-select form-select-sm">
+                    <select name="whsl_id" class="form-select form-select-sm">
                         <option value="">All Warehouses</option>
                         @foreach ($warehouses as $w)
-                            <option value="{{ $w->warehouse_id }}"
-                                {{ ($filters['warehouse_id'] ?? '') == $w->warehouse_id ? 'selected' : '' }}>{{ $w->nama_gudang }}
+                            <option value="{{ $w->whsl_id }}"
+                                {{ ($filters['whsl_id'] ?? '') == $w->whsl_id ? 'selected' : '' }}>{{ $w->whsl_name }}
                             </option>
                         @endforeach
                     </select>
@@ -118,16 +118,16 @@
                 <div class="col-md-2">
                     <select name="status" class="form-select form-select-sm">
                         <option value="">All Status</option>
-                        <option value="Aktif" {{ ($filters['status'] ?? '') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                        <option value="Tidak Aktif" {{ ($filters['status'] ?? '') == 'Tidak Aktif' ? 'selected' : '' }}>
+                        <option value="0" {{ ($filters['status'] ?? '') == '0' ? 'selected' : '' }}>Aktif</option>
+                        <option value="1" {{ ($filters['status'] ?? '') == '1' ? 'selected' : '' }}>
                             Tidak Aktif</option>
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <select name="cat_id" class="form-select form-select-sm">
+                    <select name="cati_id" class="form-select form-select-sm">
                         <option value="">All Categories</option>
                         @foreach ($catIds as $k)
-                            <option value="{{ $k }}" {{ ($filters['cat_id'] ?? '') == $k ? 'selected' : '' }}>
+                            <option value="{{ $k }}" {{ ($filters['cati_id'] ?? '') == $k ? 'selected' : '' }}>
                                 {{ $k }}</option>
                         @endforeach
                     </select>
@@ -167,13 +167,13 @@
                         @forelse($items as $item)
                             <tr>
                                 @can('item.delete')
-                                    <td><input type="checkbox" class="checkbox-item" value="{{ $item->itemh_id }}"></td>
+                                    <td><input type="checkbox" class="checkbox-item" value="{{ $item->masti_id }}"></td>
                                 @endcan
                                 <td><a href="{{ route('items.show', $item) }}"
-                                        class="text-decoration-none fw-medium">{{ $item->item_code }}</a></td>
-                                <td>{{ $item->item_name ?? '-' }}</td>
-                                <td><span class="badge bg-info">{{ $item->cat_id ?? '-' }}</span></td>
-                                <td>{{ number_format($item->capacity, 2) }} {{ $item->uom_id_1 }}</td>
+                                        class="text-decoration-none fw-medium">{{ $item->masti_code }}</a></td>
+                                <td>{{ $item->masti_name ?? '-' }}</td>
+                                <td><span class="badge bg-info">{{ $item->category->cati_name ?? '-' }}</span></td>
+                                <td>{{ number_format($item->masti_capacity, 2) }} {{ $item->uom_id_1 }}</td>
                                 <td>
                                     <span class="badge bg-secondary">{{ $item->details_count }} detail(s)</span>
                                 </td>

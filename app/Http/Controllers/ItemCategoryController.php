@@ -21,8 +21,7 @@ class ItemCategoryController extends Controller
 
     public function index(Request $request): View
     {
-        $filters = $request->only(['search', 'trashed', 'per_page']);
-
+        $filters = $request->only(['search', 'per_page']);
         $categories = $this->itemCategoryService->search($filters);
 
         return view('item-categories.index', compact('categories', 'filters'));
@@ -60,13 +59,5 @@ class ItemCategoryController extends Controller
 
         return redirect()->route('item-categories.index')
             ->with('success', 'Item category berhasil dihapus.');
-    }
-
-    public function restore(int $id): RedirectResponse
-    {
-        $this->itemCategoryService->restore($id);
-
-        return redirect()->route('item-categories.index')
-            ->with('success', 'Item category berhasil dipulihkan.');
     }
 }

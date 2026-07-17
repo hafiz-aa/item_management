@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ActivityLog;
 use App\Models\Branch;
+use App\Models\ItemCategory;
 use App\Models\ItemDetail;
 use App\Models\User;
 use App\Models\Warehouse;
@@ -24,7 +25,7 @@ class DashboardService
         return Cache::remember('dashboard_stats', 300, function () {
             return [
                 'total_items' => $this->itemRepo->countTotal(),
-                'active_items' => $this->itemRepo->countByStatus('Aktif'),
+                'active_items' => $this->itemRepo->countByStatus('0'),
                 'damaged_items' => $this->itemRepo->countBroken(),
                 'sold_items' => $this->itemRepo->countDisposed(),
                 'total_warehouses' => Warehouse::count(),
@@ -47,7 +48,7 @@ class DashboardService
     private function getWarehouseChartData(): array
     {
         $warehouseCounts = $this->itemRepo->countByWarehouse();
-        $warehouses = Warehouse::whereIn('warehouse_id', array_keys($warehouseCounts))->pluck('nama_gudang', 'warehouse_id');
+        $warehouses = Warehouse::whereIn('whsl_id', array_keys($warehouseCounts))->pluck('whsl_name', 'whsl_id');
 
         $labels = [];
         $data = [];
@@ -62,17 +63,22 @@ class DashboardService
     private function getKategoriChartData(): array
     {
         $kategoriCounts = $this->itemRepo->countByKategori();
+        $categories = ItemCategory::whereIn('cati_id', array_keys($kategoriCounts))->pluck('cati_code', 'cati_id');
 
-        return [
-            'labels' => array_keys($kategoriCounts),
-            'data' => array_values($kategoriCounts),
-        ];
+        $labels = [];
+        $data = [];
+        foreach ($kategoriCounts as $id => $count) {
+            $labels[] = $categories[$id] ?? "Kategori #{$id}";
+            $data[] = $count;
+        }
+
+        return ['labels' => $labels, 'data' => $data];
     }
 
     private function getYearChartData(): array
     {
-        $yearCounts = ItemDetail::selectRaw('YEAR(acquired_date) as year, count(*) as total')
-            ->whereNotNull('acquired_date')
+        $yearCounts = ItemDetail::selectRaw('YEAR(itemd_acquired_date) as year, count(*) as total')
+            ->whereNotNull('itemd_acquired_date')
             ->groupBy('year')
             ->orderBy('year')
             ->pluck('total', 'year')

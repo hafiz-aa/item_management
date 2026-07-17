@@ -74,17 +74,6 @@
                     <a href="{{ route('item-categories.index') }}" class="btn btn-sm btn-secondary w-100"><i
                             class="bi bi-x-lg"></i></a>
                 </div>
-                <div class="col-md-4 text-end">
-                    @if(! empty($filters['trashed']))
-                        <a href="{{ route('item-categories.index', ['search' => $filters['search'] ?? '']) }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-eye"></i> View Active
-                        </a>
-                    @else
-                        <a href="{{ route('item-categories.index', ['trashed' => 1, 'search' => $filters['search'] ?? '']) }}" class="btn btn-sm btn-outline-danger">
-                            <i class="bi bi-trash"></i> View Trashed
-                        </a>
-                    @endif
-                </div>
             </form>
 
             <div class="table-responsive">
@@ -102,37 +91,26 @@
                     <tbody>
                         @forelse($categories as $category)
                             <tr>
-                                <td>{{ $category->category_id }}</td>
-                                <td class="fw-medium">{{ $category->category_code }}</td>
-                                <td>{{ $category->category_name }}</td>
-                                <td>{{ $category->description ?? '-' }}</td>
-                                <td><span class="badge bg-info">{{ $category->item_descriptions_count }}</span></td>
+                                <td>{{ $category->cati_id }}</td>
+                                <td class="fw-medium">{{ $category->cati_code }}</td>
+                                <td>{{ $category->cati_name }}</td>
+                                <td>{{ $category->cati_notes ?? '-' }}</td>
+                                <td><span class="badge bg-info">{{ $category->master_items_count }}</span></td>
                                 <td>
                                     <div class="d-flex gap-1">
-                                        @if($category->trashed())
-                                            @can('item-category.delete')
-                                                <form action="{{ route('item-categories.restore', $category->category_id) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-success" title="Restore">
-                                                        <i class="bi bi-arrow-counterclockwise"></i>
-                                                    </button>
-                                                </form>
-                                            @endcan
-                                        @else
-                                            @can('item-category.edit')
-                                                <a href="{{ route('item-categories.edit', $category) }}" class="btn btn-sm btn-warning text-white" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                            @endcan
-                                            @can('item-category.delete')
-                                                <form action="{{ route('item-categories.destroy', $category) }}" method="POST">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            @endcan
-                                        @endif
+                                        @can('item-category.edit')
+                                            <a href="{{ route('item-categories.edit', $category) }}" class="btn btn-sm btn-warning text-white" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        @endcan
+                                        @can('item-category.delete')
+                                            <form action="{{ route('item-categories.destroy', $category) }}" method="POST">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

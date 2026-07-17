@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\ItemDetail;
-use App\Models\ItemHeader;
+use App\Models\MasterItem;
 use App\Repositories\ActivityLogRepository;
 use App\Repositories\ItemRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -25,43 +25,41 @@ class ItemService extends BaseService
         return $this->repository->search($filters);
     }
 
-    public function findById(int $id): ItemHeader
+    public function findById(int $id): MasterItem
     {
         return $this->repository->findById($id);
     }
 
-    public function create(array $data): ItemHeader
+    public function create(array $data): MasterItem
     {
         return DB::transaction(function () use ($data) {
             $headerData = [
-                'company_id' => $data['company_id'] ?? null,
-                'item_code' => $data['item_code'],
-                'item_name' => $data['item_name'] ?? null,
-                'capacity' => $data['capacity'] ?? 0,
-                'uom_id_1' => $data['uom_id_1'] ?? 'Kg',
-                'uom_id_2' => $data['uom_id_2'] ?? null,
-                'cat_id' => $data['cat_id'] ?? null,
-                'created_by' => Auth::id(),
+                'comp_id' => $data['comp_id'] ?? 0,
+                'masti_code' => $data['item_code'],
+                'masti_name' => $data['item_name'] ?? null,
+                'masti_capacity' => $data['capacity'] ?? null,
+                'uom_id_1' => $data['uom_id_1'] ?? 1,
+                'uom_id_2' => $data['uom_id_2'] ?? 0,
+                'cati_id' => $data['cati_id'] ?? null,
             ];
 
             $header = $this->repository->create($headerData);
 
             $detailData = [
-                'itemh_id' => $header->itemh_id,
-                'company_id' => $data['company_id'] ?? null,
+                'comp_id' => $data['comp_id'] ?? 0,
+                'masti_id' => $header->masti_id,
                 'branch_id' => $data['branch_id'] ?? null,
                 'whsl_id' => $data['whsl_id'] ?? null,
-                'acquired_date' => $data['acquired_date'] ?? null,
+                'itemd_acquired_date' => $data['itemd_acquired_date'] ?? null,
                 'itemd_code' => $data['itemd_code'] ?? null,
-                'qty' => $data['qty'] ?? 1,
-                'status' => $data['status'] ?? 'Aktif',
-                'position_id' => $data['position_id'] ?? null,
-                'is_broken' => $data['is_broken'] ?? false,
-                'is_dispossed' => $data['is_dispossed'] ?? false,
-                'is_writeoff' => $data['is_writeoff'] ?? false,
-                'warehouse_id' => $data['warehouse_id'] ?? null,
-                'original_branch_id' => $data['original_branch_id'] ?? null,
-                'created_by' => Auth::id(),
+                'itemd_qty' => $data['itemd_qty'] ?? 1,
+                'itemd_status' => $data['itemd_status'] ?? '0',
+                'itemd_position' => $data['itemd_position'] ?? 'Internal',
+                'itemd_is_broken' => $data['itemd_is_broken'] ?? '0',
+                'itemd_is_dispossed' => $data['itemd_is_dispossed'] ?? '0',
+                'itemd_is_wo' => $data['itemd_is_wo'] ?? '0',
+                'original_branch_id' => $data['original_branch_id'] ?? 0,
+                'uom_id' => $data['uom_id'] ?? 1,
             ];
 
             ItemDetail::create($detailData);
@@ -69,9 +67,9 @@ class ItemService extends BaseService
             $this->logRepo->log(
                 Auth::id(),
                 'item_created',
-                "Membuat item baru: {$header->item_code}",
-                ItemHeader::class,
-                $header->itemh_id,
+                "Membuat item baru: {$header->masti_code}",
+                MasterItem::class,
+                $header->masti_id,
                 $header->toArray()
             );
 
@@ -79,18 +77,17 @@ class ItemService extends BaseService
         });
     }
 
-    public function update(ItemHeader $header, array $data): bool
+    public function update(MasterItem $header, array $data): bool
     {
         return DB::transaction(function () use ($header, $data) {
             $headerData = array_filter([
-                'company_id' => $data['company_id'] ?? null,
-                'item_code' => $data['item_code'] ?? null,
-                'item_name' => $data['item_name'] ?? null,
-                'capacity' => $data['capacity'] ?? null,
+                'comp_id' => $data['comp_id'] ?? null,
+                'masti_code' => $data['item_code'] ?? null,
+                'masti_name' => $data['item_name'] ?? null,
+                'masti_capacity' => $data['capacity'] ?? null,
                 'uom_id_1' => $data['uom_id_1'] ?? null,
                 'uom_id_2' => $data['uom_id_2'] ?? null,
-                'cat_id' => $data['cat_id'] ?? null,
-                'updated_by' => Auth::id(),
+                'cati_id' => $data['cati_id'] ?? null,
             ], fn ($v) => $v !== null);
 
             $header->update($headerData);
@@ -98,20 +95,19 @@ class ItemService extends BaseService
             $detail = $header->details()->first();
             if ($detail) {
                 $detailData = array_filter([
-                    'company_id' => $data['company_id'] ?? null,
+                    'comp_id' => $data['comp_id'] ?? null,
                     'branch_id' => $data['branch_id'] ?? null,
                     'whsl_id' => $data['whsl_id'] ?? null,
-                    'acquired_date' => $data['acquired_date'] ?? null,
+                    'itemd_acquired_date' => $data['itemd_acquired_date'] ?? null,
                     'itemd_code' => $data['itemd_code'] ?? null,
-                    'qty' => $data['qty'] ?? null,
-                    'status' => $data['status'] ?? null,
-                    'position_id' => $data['position_id'] ?? null,
-                    'is_broken' => $data['is_broken'] ?? null,
-                    'is_dispossed' => $data['is_dispossed'] ?? null,
-                    'is_writeoff' => $data['is_writeoff'] ?? null,
-                    'warehouse_id' => $data['warehouse_id'] ?? null,
+                    'itemd_qty' => $data['itemd_qty'] ?? null,
+                    'itemd_status' => $data['itemd_status'] ?? null,
+                    'itemd_position' => $data['itemd_position'] ?? null,
+                    'itemd_is_broken' => $data['itemd_is_broken'] ?? null,
+                    'itemd_is_dispossed' => $data['itemd_is_dispossed'] ?? null,
+                    'itemd_is_wo' => $data['itemd_is_wo'] ?? null,
                     'original_branch_id' => $data['original_branch_id'] ?? null,
-                    'updated_by' => Auth::id(),
+                    'uom_id' => $data['uom_id'] ?? null,
                 ], fn ($v) => $v !== null);
 
                 $detail->update($detailData);
@@ -120,9 +116,9 @@ class ItemService extends BaseService
             $this->logRepo->log(
                 Auth::id(),
                 'item_updated',
-                "Mengupdate item: {$header->item_code}",
-                ItemHeader::class,
-                $header->itemh_id,
+                "Mengupdate item: {$header->masti_code}",
+                MasterItem::class,
+                $header->masti_id,
                 $header->fresh()->toArray()
             );
 
@@ -130,9 +126,9 @@ class ItemService extends BaseService
         });
     }
 
-    public function delete(ItemHeader $header): bool
+    public function delete(MasterItem $header): bool
     {
-        $code = $header->item_code;
+        $code = $header->masti_code;
         $deleted = $this->repository->delete($header);
 
         if ($deleted) {
@@ -140,8 +136,8 @@ class ItemService extends BaseService
                 Auth::id(),
                 'item_deleted',
                 "Menghapus item: {$code}",
-                ItemHeader::class,
-                $header->itemh_id
+                MasterItem::class,
+                $header->masti_id
             );
         }
 

@@ -22,7 +22,7 @@ class WarehousePolicy
             return true;
         }
 
-        return $user->warehouses->contains('warehouse_id', $warehouse->warehouse_id);
+        return $user->branches->contains('branch_id', $warehouse->branch_id);
     }
 
     public function create(User $user): bool

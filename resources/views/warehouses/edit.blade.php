@@ -7,15 +7,15 @@
 <script>
 $(document).ready(function() {
     function toggleParent() {
-        if ($('#tipe').val() === 'Kantor Cabang') {
+        if ($('#whsl_type').val() === '1') {
             $('#parent-row').show();
         } else {
             $('#parent-row').hide();
-            $('#parent_id').val('');
+            $('#whsl_parent_id').val('');
         }
     }
     toggleParent();
-    $('#tipe').on('change', toggleParent);
+    $('#whsl_type').on('change', toggleParent);
 
     $('.btn-delete-child').on('click', function(e) {
         e.preventDefault();
@@ -40,41 +40,41 @@ $(document).ready(function() {
 @section('content')
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white py-3">
-        <h5 class="fw-bold mb-0">Edit: {{ $warehouse->kode_gudang }} - {{ $warehouse->nama_gudang }}</h5>
+        <h5 class="fw-bold mb-0">Edit: {{ $warehouse->whsl_code }} - {{ $warehouse->whsl_name }}</h5>
     </div>
     <div class="card-body">
         <form method="POST" action="{{ route('warehouses.update', $warehouse) }}">
             @csrf @method('PUT')
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label for="kode_gudang" class="form-label">Kode Kantor Cabang <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('kode_gudang') is-invalid @enderror" id="kode_gudang" name="kode_gudang" value="{{ old('kode_gudang', $warehouse->kode_gudang) }}" required>
-                    @error('kode_gudang') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="whsl_code" class="form-label">Kode Kantor Cabang <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control @error('whsl_code') is-invalid @enderror" id="whsl_code" name="whsl_code" value="{{ old('whsl_code', $warehouse->whsl_code) }}" required>
+                    @error('whsl_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-6">
-                    <label for="nama_gudang" class="form-label">Nama Kantor Cabang <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('nama_gudang') is-invalid @enderror" id="nama_gudang" name="nama_gudang" value="{{ old('nama_gudang', $warehouse->nama_gudang) }}" required>
-                    @error('nama_gudang') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="whsl_name" class="form-label">Nama Kantor Cabang <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control @error('whsl_name') is-invalid @enderror" id="whsl_name" name="whsl_name" value="{{ old('whsl_name', $warehouse->whsl_name) }}" required>
+                    @error('whsl_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
             <div class="row g-3 mt-2">
                 <div class="col-md-6">
-                    <label for="tipe" class="form-label">Tipe <span class="text-danger">*</span></label>
-                    <select class="form-select @error('tipe') is-invalid @enderror" id="tipe" name="tipe" required>
-                        <option value="Kantor Pusat" {{ old('tipe', $warehouse->tipe) == 'Kantor Pusat' ? 'selected' : '' }}>Kantor Pusat</option>
-                        <option value="Kantor Cabang" {{ old('tipe', $warehouse->tipe) == 'Kantor Cabang' ? 'selected' : '' }}>Kantor Cabang</option>
+                    <label for="whsl_type" class="form-label">Tipe <span class="text-danger">*</span></label>
+                    <select class="form-select @error('whsl_type') is-invalid @enderror" id="whsl_type" name="whsl_type" required>
+                        <option value="0" {{ old('whsl_type', $warehouse->whsl_type) == '0' ? 'selected' : '' }}>Kantor Pusat</option>
+                        <option value="1" {{ old('whsl_type', $warehouse->whsl_type) == '1' ? 'selected' : '' }}>Kantor Cabang</option>
                     </select>
-                    @error('tipe') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('whsl_type') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-6" id="parent-row">
-                    <label for="parent_id" class="form-label">Induk</label>
-                    <select class="form-select @error('parent_id') is-invalid @enderror" id="parent_id" name="parent_id">
+                    <label for="whsl_parent_id" class="form-label">Induk</label>
+                    <select class="form-select @error('whsl_parent_id') is-invalid @enderror" id="whsl_parent_id" name="whsl_parent_id">
                         <option value="">-- Pilih Induk --</option>
                         @foreach($parentWarehouses as $p)
-                        <option value="{{ $p->warehouse_id }}" {{ old('parent_id', $warehouse->parent_id) == $p->warehouse_id ? 'selected' : '' }}>{{ $p->kode_gudang }} - {{ $p->nama_gudang }}</option>
+                        <option value="{{ $p->whsl_id }}" {{ old('whsl_parent_id', $warehouse->whsl_parent_id) == $p->whsl_id ? 'selected' : '' }}>{{ $p->whsl_code }} - {{ $p->whsl_name }}</option>
                         @endforeach
                     </select>
-                    @error('parent_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('whsl_parent_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
             </div>
             <div class="row g-3 mt-2">
@@ -89,18 +89,13 @@ $(document).ready(function() {
                     @error('branch_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-6">
-                    <label for="status" class="form-label">Status</label>
-                    <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
-                        <option value="Aktif" {{ (old('status', $warehouse->status)) == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                        <option value="Tidak Aktif" {{ old('status', $warehouse->status) == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                    <label for="whsl_status" class="form-label">Status</label>
+                    <select class="form-select @error('whsl_status') is-invalid @enderror" id="whsl_status" name="whsl_status">
+                        <option value="0" {{ (old('whsl_status', $warehouse->whsl_status)) == '0' ? 'selected' : '' }}>Aktif</option>
+                        <option value="1" {{ old('whsl_status', $warehouse->whsl_status) == '1' ? 'selected' : '' }}>Tidak Aktif</option>
                     </select>
-                    @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    @error('whsl_status') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
-            </div>
-            <div class="mt-3">
-                <label for="alamat" class="form-label">Alamat</label>
-                <textarea class="form-control @error('alamat') is-invalid @enderror" id="alamat" name="alamat" rows="3">{{ old('alamat', $warehouse->alamat) }}</textarea>
-                @error('alamat') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             <div class="mt-4 d-flex gap-2">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Update</button>
@@ -114,7 +109,7 @@ $(document).ready(function() {
     <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
         <h5 class="fw-bold mb-0">Data Cabang / Branch</h5>
         @can('warehouse.manage')
-        <a href="{{ route('warehouses.create', ['parent_id' => $warehouse->warehouse_id]) }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Tambah Cabang</a>
+        <a href="{{ route('warehouses.create', ['whsl_parent_id' => $warehouse->whsl_id]) }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Tambah Cabang</a>
         @endcan
     </div>
     <div class="card-body">
@@ -136,8 +131,8 @@ $(document).ready(function() {
                 <tbody>
                     @foreach($warehouse->children as $child)
                     <tr>
-                        <td class="fw-medium">{{ $child->kode_gudang }}</td>
-                        <td>{{ $child->nama_gudang }}</td>
+                        <td class="fw-medium">{{ $child->whsl_code }}</td>
+                        <td>{{ $child->whsl_name }}</td>
                         <td>
                             @if($child->branch)
                                 <span class="badge bg-info">{{ $child->branch->branch_code }}</span>
@@ -145,8 +140,8 @@ $(document).ready(function() {
                                 <span class="text-muted">-</span>
                             @endif
                         </td>
-                        <td><span class="badge bg-info">{{ $child->tipe }}</span></td>
-                        <td><span class="badge bg-{{ $child->status == 'Aktif' ? 'success' : 'secondary' }}">{{ $child->status }}</span></td>
+                        <td><span class="badge bg-info">{{ $child->whsl_type == '0' ? 'Kantor Pusat' : 'Kantor Cabang' }}</span></td>
+                        <td><span class="badge bg-{{ $child->whsl_status == '0' ? 'success' : 'secondary' }}">{{ $child->whsl_status == '0' ? 'Aktif' : 'Tidak Aktif' }}</span></td>
                         <td>
                             <div class="d-flex gap-1">
                                 <a href="{{ route('warehouses.edit', $child) }}" class="btn btn-sm btn-warning text-white" title="Edit"><i class="bi bi-pencil"></i></a>
@@ -154,15 +149,15 @@ $(document).ready(function() {
                                     @csrf @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger btn-delete-child" title="Delete"><i class="bi bi-trash"></i></button>
                                 </form>
-                                <a href="{{ route('warehouses.create', ['parent_id' => $child->warehouse_id]) }}" class="btn btn-sm btn-success text-white" title="Add Sub"><i class="bi bi-plus"></i></a>
+                                <a href="{{ route('warehouses.create', ['whsl_parent_id' => $child->whsl_id]) }}" class="btn btn-sm btn-success text-white" title="Add Sub"><i class="bi bi-plus"></i></a>
                             </div>
                         </td>
                     </tr>
                     @if($child->children->isNotEmpty())
                     @foreach($child->children as $sub)
                     <tr>
-                        <td class="ps-4 text-muted">{{ $sub->kode_gudang }}</td>
-                        <td class="ps-4 text-muted">{{ $sub->nama_gudang }}</td>
+                        <td class="ps-4 text-muted">{{ $sub->whsl_code }}</td>
+                        <td class="ps-4 text-muted">{{ $sub->whsl_name }}</td>
                         <td>
                             @if($sub->branch)
                                 <span class="badge bg-info">{{ $sub->branch->branch_code }}</span>
@@ -170,8 +165,8 @@ $(document).ready(function() {
                                 <span class="text-muted">-</span>
                             @endif
                         </td>
-                        <td><span class="badge bg-secondary">{{ $sub->tipe }}</span></td>
-                        <td><span class="badge bg-{{ $sub->status == 'Aktif' ? 'success' : 'secondary' }}">{{ $sub->status }}</span></td>
+                        <td><span class="badge bg-secondary">{{ $sub->whsl_type == '0' ? 'Kantor Pusat' : 'Kantor Cabang' }}</span></td>
+                        <td><span class="badge bg-{{ $sub->whsl_status == '0' ? 'success' : 'secondary' }}">{{ $sub->whsl_status == '0' ? 'Aktif' : 'Tidak Aktif' }}</span></td>
                         <td>
                             <div class="d-flex gap-1">
                                 <a href="{{ route('warehouses.edit', $sub) }}" class="btn btn-sm btn-warning text-white" title="Edit"><i class="bi bi-pencil"></i></a>
@@ -179,7 +174,7 @@ $(document).ready(function() {
                                     @csrf @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger btn-delete-child" title="Delete"><i class="bi bi-trash"></i></button>
                                 </form>
-                                <a href="{{ route('warehouses.create', ['parent_id' => $sub->warehouse_id]) }}" class="btn btn-sm btn-success text-white" title="Add Sub"><i class="bi bi-plus"></i></a>
+                                <a href="{{ route('warehouses.create', ['whsl_parent_id' => $sub->whsl_id]) }}" class="btn btn-sm btn-success text-white" title="Add Sub"><i class="bi bi-plus"></i></a>
                             </div>
                         </td>
                     </tr>

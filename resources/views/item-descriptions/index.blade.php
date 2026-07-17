@@ -74,17 +74,6 @@
                     <a href="{{ route('item-descriptions.index') }}" class="btn btn-sm btn-secondary w-100"><i
                             class="bi bi-x-lg"></i></a>
                 </div>
-                <div class="col-md-4 text-end">
-                    @if(! empty($filters['trashed']))
-                        <a href="{{ route('item-descriptions.index', ['search' => $filters['search'] ?? '']) }}" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-eye"></i> View Active
-                        </a>
-                    @else
-                        <a href="{{ route('item-descriptions.index', ['trashed' => 1, 'search' => $filters['search'] ?? '']) }}" class="btn btn-sm btn-outline-danger">
-                            <i class="bi bi-trash"></i> View Trashed
-                        </a>
-                    @endif
-                </div>
             </form>
 
             <div class="table-responsive">
@@ -103,45 +92,34 @@
                     <tbody>
                         @forelse($itemDescriptions as $itemDesc)
                             <tr>
-                                <td>{{ $itemDesc->item_desc_id }}</td>
-                                <td class="fw-medium">{{ $itemDesc->item_code }}</td>
-                                <td>{{ $itemDesc->item_description ?? '-' }}</td>
-                                <td>{{ $itemDesc->capacity }}</td>
-                                <td><span class="badge bg-secondary">{{ $itemDesc->uom }}</span></td>
+                                <td>{{ $itemDesc->masti_id }}</td>
+                                <td class="fw-medium">{{ $itemDesc->masti_code }}</td>
+                                <td>{{ $itemDesc->masti_name ?? '-' }}</td>
+                                <td>{{ $itemDesc->masti_capacity }}</td>
+                                <td><span class="badge bg-secondary">{{ $itemDesc->uom?->uom_name ?? $itemDesc->uom_id_1 }}</span></td>
                                 <td>
                                     @if($itemDesc->category)
-                                        <span class="badge bg-info">{{ $itemDesc->category->category_code }}</span>
-                                        {{ $itemDesc->category->category_name }}
+                                        <span class="badge bg-info">{{ $itemDesc->category->cati_code }}</span>
+                                        {{ $itemDesc->category->cati_name }}
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
                                 <td>
                                     <div class="d-flex gap-1">
-                                        @if($itemDesc->trashed())
-                                            @can('item-description.delete')
-                                                <form action="{{ route('item-descriptions.restore', $itemDesc->item_desc_id) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-success" title="Restore">
-                                                        <i class="bi bi-arrow-counterclockwise"></i>
-                                                    </button>
-                                                </form>
-                                            @endcan
-                                        @else
-                                            @can('item-description.edit')
-                                                <a href="{{ route('item-descriptions.edit', $itemDesc) }}" class="btn btn-sm btn-warning text-white" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                            @endcan
-                                            @can('item-description.delete')
-                                                <form action="{{ route('item-descriptions.destroy', $itemDesc) }}" method="POST">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            @endcan
-                                        @endif
+                                        @can('item-description.edit')
+                                            <a href="{{ route('item-descriptions.edit', $itemDesc) }}" class="btn btn-sm btn-warning text-white" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        @endcan
+                                        @can('item-description.delete')
+                                            <form action="{{ route('item-descriptions.destroy', $itemDesc) }}" method="POST">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

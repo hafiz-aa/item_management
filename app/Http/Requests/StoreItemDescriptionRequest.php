@@ -14,22 +14,21 @@ class StoreItemDescriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'item_code' => ['required', 'string', 'max:100', 'unique:item_descriptions,item_code'],
-            'item_description' => ['nullable', 'string'],
-            'capacity' => ['required', 'numeric', 'min:0'],
-            'uom' => ['required', 'string', 'max:20'],
-            'category_id' => ['nullable', 'exists:item_categories,category_id'],
+            'masti_code' => ['required', 'string', 'max:50', 'unique:master_item,masti_code'],
+            'masti_name' => ['nullable', 'string', 'max:255'],
+            'masti_capacity' => ['nullable', 'string', 'max:100'],
+            'uom_id_1' => ['required', 'integer', 'exists:uom,uom_id'],
+            'cati_id' => ['required', 'integer', 'exists:category_item,cati_id'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'item_code.required' => 'Kode item wajib diisi.',
-            'item_code.unique' => 'Kode item sudah digunakan.',
-            'capacity.required' => 'Kapasitas wajib diisi.',
-            'capacity.numeric' => 'Kapasitas harus berupa angka.',
-            'uom.required' => 'UOM wajib diisi.',
+            'masti_code.required' => 'Kode item wajib diisi.',
+            'masti_code.unique' => 'Kode item sudah digunakan.',
+            'uom_id_1.required' => 'UOM wajib diisi.',
+            'cati_id.required' => 'Kategori wajib diisi.',
         ];
     }
 }

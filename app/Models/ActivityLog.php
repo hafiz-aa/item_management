@@ -8,34 +8,24 @@ class ActivityLog extends Model
 {
     protected $fillable = [
         'user_id',
-        'type',
-        'model_type',
-        'model_id',
+        'action',
         'description',
-        'data',
-        'ip_address',
-        'user_agent',
+        'subject_type',
+        'subject_id',
+        'old_values',
+        'new_values',
     ];
 
     protected function casts(): array
     {
         return [
-            'data' => 'array',
+            'old_values' => 'array',
+            'new_values' => 'array',
         ];
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function scopeByType($query, $type)
-    {
-        return $query->where('type', $type);
-    }
-
-    public function scopeRecent($query, $limit = 50)
-    {
-        return $query->latest()->limit($limit);
+        return $this->belongsTo(User::class, 'user_id', 'users_id');
     }
 }

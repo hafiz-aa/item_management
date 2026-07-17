@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Warehouse;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -17,8 +18,9 @@ class CheckWarehouseAccess
                 ?? $request->input('warehouse_id');
 
             if ($routeWarehouseId) {
-                $userWarehouseIds = $user->warehouses->pluck('warehouse_id')->toArray();
-                if (! in_array((int) $routeWarehouseId, $userWarehouseIds)) {
+                $userBranchIds = $user->branches->pluck('branch_id')->toArray();
+                $warehouse = Warehouse::find($routeWarehouseId);
+                if ($warehouse && ! in_array((int) $warehouse->branch_id, $userBranchIds)) {
                     return redirect()->route('dashboard')
                         ->with('error', 'Anda tidak memiliki akses ke gudang tersebut.');
                 }

@@ -77,22 +77,4 @@ class BranchService extends BaseService
 
         return $deleted;
     }
-
-    public function restore(int $id): bool
-    {
-        $branch = Branch::onlyTrashed()->findOrFail($id);
-        $restored = $branch->restore();
-
-        if ($restored) {
-            $this->logRepo->log(
-                Auth::id(),
-                'branch_restored',
-                "Memulihkan branch: {$branch->branch_code}",
-                Branch::class,
-                $branch->branch_id
-            );
-        }
-
-        return $restored;
-    }
 }

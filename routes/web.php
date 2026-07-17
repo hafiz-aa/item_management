@@ -34,23 +34,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::middleware(['can:branch.view'])->group(function () {
         Route::resource('branches', BranchController::class)->except('show');
-        Route::post('branches/{id}/restore', [BranchController::class, 'restore'])
-            ->name('branches.restore')
-            ->middleware('can:branch.delete');
     });
 
     Route::middleware(['can:item-category.view'])->group(function () {
         Route::resource('item-categories', ItemCategoryController::class)->except('show');
-        Route::post('item-categories/{id}/restore', [ItemCategoryController::class, 'restore'])
-            ->name('item-categories.restore')
-            ->middleware('can:item-category.delete');
     });
 
     Route::middleware(['can:item-description.view'])->group(function () {
         Route::resource('item-descriptions', ItemDescriptionController::class)->except('show');
-        Route::post('item-descriptions/{id}/restore', [ItemDescriptionController::class, 'restore'])
-            ->name('item-descriptions.restore')
-            ->middleware('can:item-description.delete');
     });
 
     Route::middleware(['can:user.manage'])->group(function () {
