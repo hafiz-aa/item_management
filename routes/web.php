@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
@@ -9,9 +10,12 @@ use App\Http\Controllers\ItemAllBranchesController;
 use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemDescriptionController;
+use App\Http\Controllers\ItemSummaryController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\UomController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::middleware(['can:item.view'])->group(function () {
         Route::get('items/all-branches', [ItemAllBranchesController::class, 'index'])->name('items.all-branches');
+        Route::get('items/summary', [ItemSummaryController::class, 'index'])->name('items.summary');
         Route::resource('items', ItemController::class);
         Route::post('items/bulk-delete', [ItemController::class, 'bulkDelete'])->name('items.bulk-delete')
             ->middleware('can:item.delete');
@@ -76,6 +81,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::resource('uoms', UomController::class)->except('show');
+    Route::resource('customer-types', CustomerTypeController::class)->except('show');
+
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('employee', [SettingController::class, 'employee'])->name('employee');
+        Route::get('customer', [SettingController::class, 'customer'])->name('customer');
+        Route::get('vendor', [SettingController::class, 'vendor'])->name('vendor');
+        Route::get('transaction-period', [SettingController::class, 'transactionPeriod'])->name('transaction-period');
+    });
 });
 
 require __DIR__.'/auth.php';

@@ -27,12 +27,12 @@
 
             @canany(['item.view', 'item-category.view', 'item-description.view'])
                 <li class="nav-item px-2 mb-1">
-                    <button class="nav-link text-white w-100 text-start {{ request()->routeIs('items.*', 'items.all-branches', 'item-categories.*', 'item-descriptions.*') ? 'active bg-primary' : '' }}"
+                    <button class="nav-link text-white w-100 text-start {{ request()->routeIs('items.*', 'items.all-branches', 'items.summary', 'item-categories.*', 'item-descriptions.*') ? 'active bg-primary' : '' }}"
                         data-bs-toggle="collapse" data-bs-target="#itemMenu">
                         <i class="bi bi-box me-2"></i><span class="sidebar-label">Item</span>
                         <i class="bi bi-chevron-down float-end mt-1"></i>
                     </button>
-                    <div id="itemMenu" class="collapse {{ request()->routeIs('items.*', 'items.all-branches', 'item-categories.*', 'item-descriptions.*') ? 'show' : '' }}">
+                    <div id="itemMenu" class="collapse {{ request()->routeIs('items.*', 'items.all-branches', 'items.summary', 'item-categories.*', 'item-descriptions.*') ? 'show' : '' }}">
                         <ul class="nav nav-pills flex-column ps-3">
                             @can('item-category.view')
                                 <li class="nav-item mb-1">
@@ -53,7 +53,7 @@
                             @can('item.view')
                                 <li class="nav-item mb-1">
                                     <a href="{{ route('items.index') }}"
-                                        class="nav-link text-white py-1 {{ request()->routeIs('items.*') && !request()->routeIs('items.all-branches') ? 'active bg-primary' : '' }}">
+                                        class="nav-link text-white py-1 {{ request()->routeIs('items.*') && !request()->routeIs('items.all-branches', 'items.summary') ? 'active bg-primary' : '' }}">
                                         <i class="bi bi-box me-2"></i><span class="sidebar-label">Items</span>
                                     </a>
                                 </li>
@@ -61,6 +61,12 @@
                                     <a href="{{ route('items.all-branches') }}"
                                         class="nav-link text-white py-1 {{ request()->routeIs('items.all-branches') ? 'active bg-primary' : '' }}">
                                         <i class="bi bi-grid me-2"></i><span class="sidebar-label">Item All Branches</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a href="{{ route('items.summary') }}"
+                                        class="nav-link text-white py-1 {{ request()->routeIs('items.summary') ? 'active bg-primary' : '' }}">
+                                        <i class="bi bi-bar-chart me-2"></i><span class="sidebar-label">Item Summary</span>
                                     </a>
                                 </li>
                             @endcan
@@ -94,38 +100,90 @@
             @endcan
 
             <li class="nav-item px-2 mt-2 mb-1 sidebar-section-header">
-                <small class="text-secondary text-uppercase px-2 fw-bold sidebar-label">Management</small>
+                <small class="text-secondary text-uppercase px-2 fw-bold sidebar-label">Settings</small>
             </li>
 
-            @can('user.manage')
+            @canany(['user.manage'])
                 <li class="nav-item px-2 mb-1">
-                    <a href="{{ route('users.index') }}"
-                        class="nav-link text-white {{ request()->routeIs('users.*') ? 'active bg-primary' : '' }}"
-                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Users">
-                        <i class="bi bi-people me-2"></i><span class="sidebar-label">Users</span>
-                    </a>
+                    <button class="nav-link text-white w-100 text-start {{ request()->routeIs('settings.*', 'uoms.*', 'customer-types.*', 'users.*', 'profile.*', 'roles.*', 'permissions.*') ? 'active bg-primary' : '' }}"
+                        data-bs-toggle="collapse" data-bs-target="#settingsMenu">
+                        <i class="bi bi-gear me-2"></i><span class="sidebar-label">Settings</span>
+                        <i class="bi bi-chevron-down float-end mt-1"></i>
+                    </button>
+                    <div id="settingsMenu" class="collapse {{ request()->routeIs('settings.*', 'uoms.*', 'customer-types.*', 'users.*', 'profile.*', 'roles.*', 'permissions.*') ? 'show' : '' }}">
+                        <ul class="nav nav-pills flex-column ps-3">
+                            @can('user.manage')
+                                <li class="nav-item mb-1">
+                                    <a href="{{ route('users.index') }}"
+                                        class="nav-link text-white py-1 {{ request()->routeIs('users.*') ? 'active bg-primary' : '' }}">
+                                        <i class="bi bi-people me-2"></i><span class="sidebar-label">User</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('user.manage')
+                                <li class="nav-item mb-1">
+                                    <a href="{{ route('settings.employee') }}"
+                                        class="nav-link text-white py-1 {{ request()->routeIs('settings.employee') ? 'active bg-primary' : '' }}">
+                                        <i class="bi bi-person-badge me-2"></i><span class="sidebar-label">Employee</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            <li class="nav-item mb-1">
+                                <a href="{{ route('uoms.index') }}"
+                                    class="nav-link text-white py-1 {{ request()->routeIs('uoms.*') ? 'active bg-primary' : '' }}">
+                                    <i class="bi bi-rulers me-2"></i><span class="sidebar-label">Unit of Measurement</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-1">
+                                <a href="{{ route('customer-types.index') }}"
+                                    class="nav-link text-white py-1 {{ request()->routeIs('customer-types.*') ? 'active bg-primary' : '' }}">
+                                    <i class="bi bi-people-fill me-2"></i><span class="sidebar-label">Customer Type</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-1">
+                                <a href="{{ route('settings.customer') }}"
+                                    class="nav-link text-white py-1 {{ request()->routeIs('settings.customer') ? 'active bg-primary' : '' }}">
+                                    <i class="bi bi-person-lines-fill me-2"></i><span class="sidebar-label">Customer</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-1">
+                                <a href="{{ route('settings.vendor') }}"
+                                    class="nav-link text-white py-1 {{ request()->routeIs('settings.vendor') ? 'active bg-primary' : '' }}">
+                                    <i class="bi bi-truck me-2"></i><span class="sidebar-label">Vendor</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-1">
+                                <a href="{{ route('settings.transaction-period') }}"
+                                    class="nav-link text-white py-1 {{ request()->routeIs('settings.transaction-period') ? 'active bg-primary' : '' }}">
+                                    <i class="bi bi-calendar-range me-2"></i><span class="sidebar-label">Transaction Period</span>
+                                </a>
+                            </li>
+                            @can('role.manage')
+                                <li class="nav-item mb-1">
+                                    <a href="{{ route('roles.index') }}"
+                                        class="nav-link text-white py-1 {{ request()->routeIs('roles.*') ? 'active bg-primary' : '' }}">
+                                        <i class="bi bi-shield me-2"></i><span class="sidebar-label">Roles</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('permission.manage')
+                                <li class="nav-item mb-1">
+                                    <a href="{{ route('permissions.index') }}"
+                                        class="nav-link text-white py-1 {{ request()->routeIs('permissions.*') ? 'active bg-primary' : '' }}">
+                                        <i class="bi bi-key me-2"></i><span class="sidebar-label">Permissions</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            <li class="nav-item mb-1">
+                                <a href="{{ route('profile.edit') }}"
+                                    class="nav-link text-white py-1 {{ request()->routeIs('profile.*') ? 'active bg-primary' : '' }}">
+                                    <i class="bi bi-person-circle me-2"></i><span class="sidebar-label">Profile</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
-            @endcan
-
-            @can('role.manage')
-                <li class="nav-item px-2 mb-1">
-                    <a href="{{ route('roles.index') }}"
-                        class="nav-link text-white {{ request()->routeIs('roles.*') ? 'active bg-primary' : '' }}"
-                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Roles">
-                        <i class="bi bi-shield me-2"></i><span class="sidebar-label">Roles</span>
-                    </a>
-                </li>
-            @endcan
-
-            @can('permission.manage')
-                <li class="nav-item px-2 mb-1">
-                    <a href="{{ route('permissions.index') }}"
-                        class="nav-link text-white {{ request()->routeIs('permissions.*') ? 'active bg-primary' : '' }}"
-                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Permissions">
-                        <i class="bi bi-key me-2"></i><span class="sidebar-label">Permissions</span>
-                    </a>
-                </li>
-            @endcan
+            @endcanany
 
             <li class="nav-item px-2 mt-2 mb-1 sidebar-section-header">
                 <small class="text-secondary text-uppercase px-2 fw-bold sidebar-label">Reports</small>
