@@ -23,8 +23,9 @@
                 </div>
                 <div class="col-md-4">
                     <label for="branch_is_headquarter" class="form-label">&nbsp;</label>
+                    <input type="hidden" name="branch_is_headquarter" value="1">
                     <div class="form-check form-switch mt-2">
-                        <input class="form-check-input" type="checkbox" role="switch" id="branch_is_headquarter" name="branch_is_headquarter" value="1" {{ old('branch_is_headquarter', $branch->branch_is_headquarter) ? 'checked' : '' }}>
+                        <input class="form-check-input" type="checkbox" role="switch" id="branch_is_headquarter" name="branch_is_headquarter" value="0" {{ old('branch_is_headquarter', $branch->branch_is_headquarter) == '0' ? 'checked' : '' }}>
                         <label class="form-check-label" for="branch_is_headquarter">Headquarter</label>
                     </div>
                 </div>

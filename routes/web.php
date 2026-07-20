@@ -5,6 +5,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\ItemAllBranchesController;
 use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemDescriptionController;
@@ -23,6 +24,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::middleware(['can:item.view'])->group(function () {
+        Route::get('items/all-branches', [ItemAllBranchesController::class, 'index'])->name('items.all-branches');
         Route::resource('items', ItemController::class);
         Route::post('items/bulk-delete', [ItemController::class, 'bulkDelete'])->name('items.bulk-delete')
             ->middleware('can:item.delete');

@@ -21,13 +21,6 @@ class Branch extends Model
         'branch_address',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'branch_is_headquarter' => 'boolean',
-        ];
-    }
-
     public function warehouses()
     {
         return $this->hasMany(Warehouse::class, 'branch_id', 'branch_id');

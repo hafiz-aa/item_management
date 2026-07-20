@@ -94,7 +94,7 @@
                                 <td class="fw-medium">{{ $branch->branch_code }}</td>
                                 <td>{{ $branch->branch_name }}</td>
                                 <td>
-                                    @if($branch->branch_is_headquarter)
+                                    @if($branch->branch_is_headquarter == '0')
                                         <span class="badge bg-primary">HQ</span>
                                     @else
                                         <span class="badge bg-info">Branch</span>

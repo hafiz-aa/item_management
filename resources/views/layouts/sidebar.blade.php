@@ -25,35 +25,49 @@
                 </a>
             </li>
 
-            @can('item.view')
+            @canany(['item.view', 'item-category.view', 'item-description.view'])
                 <li class="nav-item px-2 mb-1">
-                    <a href="{{ route('items.index') }}"
-                        class="nav-link text-white {{ request()->routeIs('items.*') ? 'active bg-primary' : '' }}"
-                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Items">
-                        <i class="bi bi-box me-2"></i><span class="sidebar-label">Items</span>
-                    </a>
+                    <button class="nav-link text-white w-100 text-start {{ request()->routeIs('items.*', 'items.all-branches', 'item-categories.*', 'item-descriptions.*') ? 'active bg-primary' : '' }}"
+                        data-bs-toggle="collapse" data-bs-target="#itemMenu">
+                        <i class="bi bi-box me-2"></i><span class="sidebar-label">Item</span>
+                        <i class="bi bi-chevron-down float-end mt-1"></i>
+                    </button>
+                    <div id="itemMenu" class="collapse {{ request()->routeIs('items.*', 'items.all-branches', 'item-categories.*', 'item-descriptions.*') ? 'show' : '' }}">
+                        <ul class="nav nav-pills flex-column ps-3">
+                            @can('item-category.view')
+                                <li class="nav-item mb-1">
+                                    <a href="{{ route('item-categories.index') }}"
+                                        class="nav-link text-white py-1 {{ request()->routeIs('item-categories.*') ? 'active bg-primary' : '' }}">
+                                        <i class="bi bi-tags me-2"></i><span class="sidebar-label">Item Categories</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('item-description.view')
+                                <li class="nav-item mb-1">
+                                    <a href="{{ route('item-descriptions.index') }}"
+                                        class="nav-link text-white py-1 {{ request()->routeIs('item-descriptions.*') ? 'active bg-primary' : '' }}">
+                                        <i class="bi bi-list-ul me-2"></i><span class="sidebar-label">Item Descriptions</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('item.view')
+                                <li class="nav-item mb-1">
+                                    <a href="{{ route('items.index') }}"
+                                        class="nav-link text-white py-1 {{ request()->routeIs('items.*') && !request()->routeIs('items.all-branches') ? 'active bg-primary' : '' }}">
+                                        <i class="bi bi-box me-2"></i><span class="sidebar-label">Items</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item mb-1">
+                                    <a href="{{ route('items.all-branches') }}"
+                                        class="nav-link text-white py-1 {{ request()->routeIs('items.all-branches') ? 'active bg-primary' : '' }}">
+                                        <i class="bi bi-grid me-2"></i><span class="sidebar-label">Item All Branches</span>
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </div>
                 </li>
-            @endcan
-
-            @can('item-category.view')
-                <li class="nav-item px-2 mb-1">
-                    <a href="{{ route('item-categories.index') }}"
-                        class="nav-link text-white {{ request()->routeIs('item-categories.*') ? 'active bg-primary' : '' }}"
-                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Item Categories">
-                        <i class="bi bi-tags me-2"></i><span class="sidebar-label">Item Categories</span>
-                    </a>
-                </li>
-            @endcan
-
-            @can('item-description.view')
-                <li class="nav-item px-2 mb-1">
-                    <a href="{{ route('item-descriptions.index') }}"
-                        class="nav-link text-white {{ request()->routeIs('item-descriptions.*') ? 'active bg-primary' : '' }}"
-                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Item Descriptions">
-                        <i class="bi bi-list-ul me-2"></i><span class="sidebar-label">Item Descriptions</span>
-                    </a>
-                </li>
-            @endcan
+            @endcanany
 
             <li class="nav-item px-2 mt-2 mb-1 sidebar-section-header">
                 <small class="text-secondary text-uppercase px-2 fw-bold sidebar-label">Master Data</small>
