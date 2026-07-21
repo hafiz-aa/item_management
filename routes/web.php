@@ -19,6 +19,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UomController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VendorController;
 use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
@@ -88,9 +89,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('customer-types', CustomerTypeController::class)->except('show');
     Route::resource('customers', CustomerController::class)->except('show');
     Route::resource('employees', EmployeeController::class)->except('show');
+    Route::resource('vendors', VendorController::class)->except('show');
 
     Route::prefix('settings')->name('settings.')->group(function () {
-        Route::get('vendor', [SettingController::class, 'vendor'])->name('vendor');
         Route::get('transaction-period', [SettingController::class, 'transactionPeriod'])->name('transaction-period');
     });
 });
