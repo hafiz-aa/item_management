@@ -11,11 +11,6 @@ class SettingController extends Controller
         return view('settings.employee');
     }
 
-    public function customer(): View
-    {
-        return view('settings.customer');
-    }
-
     public function vendor(): View
     {
         return view('settings.vendor');

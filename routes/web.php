@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
@@ -84,10 +85,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('uoms', UomController::class)->except('show');
     Route::resource('customer-types', CustomerTypeController::class)->except('show');
+    Route::resource('customers', CustomerController::class)->except('show');
 
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('employee', [SettingController::class, 'employee'])->name('employee');
-        Route::get('customer', [SettingController::class, 'customer'])->name('customer');
         Route::get('vendor', [SettingController::class, 'vendor'])->name('vendor');
         Route::get('transaction-period', [SettingController::class, 'transactionPeriod'])->name('transaction-period');
     });
