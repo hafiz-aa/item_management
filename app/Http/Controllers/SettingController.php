@@ -6,11 +6,6 @@ use Illuminate\View\View;
 
 class SettingController extends Controller
 {
-    public function employee(): View
-    {
-        return view('settings.employee');
-    }
-
     public function vendor(): View
     {
         return view('settings.vendor');

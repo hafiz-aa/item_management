@@ -105,12 +105,12 @@
 
             @canany(['user.manage'])
                 <li class="nav-item px-2 mb-1">
-                    <button class="nav-link text-white w-100 text-start {{ request()->routeIs('settings.*', 'uoms.*', 'customer-types.*', 'customers.*', 'users.*', 'profile.*', 'roles.*', 'permissions.*') ? 'active bg-primary' : '' }}"
+                    <button class="nav-link text-white w-100 text-start {{ request()->routeIs('settings.*', 'uoms.*', 'customer-types.*', 'customers.*', 'employees.*', 'users.*', 'profile.*', 'roles.*', 'permissions.*') ? 'active bg-primary' : '' }}"
                         data-bs-toggle="collapse" data-bs-target="#settingsMenu">
                         <i class="bi bi-gear me-2"></i><span class="sidebar-label">Settings</span>
                         <i class="bi bi-chevron-down float-end mt-1"></i>
                     </button>
-                    <div id="settingsMenu" class="collapse {{ request()->routeIs('settings.*', 'uoms.*', 'customer-types.*', 'customers.*', 'users.*', 'profile.*', 'roles.*', 'permissions.*') ? 'show' : '' }}">
+                    <div id="settingsMenu" class="collapse {{ request()->routeIs('settings.*', 'uoms.*', 'customer-types.*', 'customers.*', 'employees.*', 'users.*', 'profile.*', 'roles.*', 'permissions.*') ? 'show' : '' }}">
                         <ul class="nav nav-pills flex-column ps-3">
                             @can('user.manage')
                                 <li class="nav-item mb-1">
@@ -122,8 +122,8 @@
                             @endcan
                             @can('user.manage')
                                 <li class="nav-item mb-1">
-                                    <a href="{{ route('settings.employee') }}"
-                                        class="nav-link text-white py-1 {{ request()->routeIs('settings.employee') ? 'active bg-primary' : '' }}">
+                                    <a href="{{ route('employees.index') }}"
+                                        class="nav-link text-white py-1 {{ request()->routeIs('employees.*') ? 'active bg-primary' : '' }}">
                                         <i class="bi bi-person-badge me-2"></i><span class="sidebar-label">Employee</span>
                                     </a>
                                 </li>
