@@ -94,7 +94,7 @@
                     <tbody>
                         @forelse($customerTypes as $type)
                             <tr>
-                                <td>{{ $type->custtp_id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td class="fw-medium">{{ $type->custtp_code }}</td>
                                 <td>{{ $type->custtp_name }}</td>
                                 <td>

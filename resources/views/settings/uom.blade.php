@@ -86,7 +86,7 @@
                     <tbody>
                         @forelse($uoms as $uom)
                             <tr>
-                                <td>{{ $uom->uom_id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td class="fw-medium">{{ $uom->uom_code }}</td>
                                 <td>{{ $uom->uom_name }}</td>
                                 <td>
