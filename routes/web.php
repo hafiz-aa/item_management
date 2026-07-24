@@ -15,6 +15,7 @@ use App\Http\Controllers\ItemDescriptionController;
 use App\Http\Controllers\ItemSummaryController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReceiveController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TransactionController;
@@ -96,7 +97,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('transfers', TransferController::class);
 
     Route::prefix('transactions')->name('transactions.')->group(function () {
-        Route::get('receive', [TransactionController::class, 'receive'])->name('receive');
+        Route::get('receive', [ReceiveController::class, 'index'])->name('receive');
         Route::get('issue', [TransactionController::class, 'issue'])->name('issue');
         Route::get('return', [TransactionController::class, 'returnItem'])->name('return');
         Route::get('broken', [TransactionController::class, 'broken'])->name('broken');
