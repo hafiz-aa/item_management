@@ -19,7 +19,9 @@
                 responsive: true,
                 processing: true,
                 serverSide: false,
-                order: [[1, 'desc']],
+                order: [
+                    [1, 'desc']
+                ],
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
                 },
@@ -28,7 +30,10 @@
                     targets: [-1]
                 }],
                 pageLength: 25,
-                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]]
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, "Semua"]
+                ]
             });
 
             $('.btn-delete').on('click', function(e) {
@@ -68,8 +73,9 @@
                 <div class="col-md-2">
                     <select name="branch_id" class="form-select form-select-sm">
                         <option value="">Semua Branch</option>
-                        @foreach($branches as $branch)
-                            <option value="{{ $branch->branch_id }}" {{ ($filters['branch_id'] ?? '') == $branch->branch_id ? 'selected' : '' }}>
+                        @foreach ($branches as $branch)
+                            <option value="{{ $branch->branch_id }}"
+                                {{ ($filters['branch_id'] ?? '') == $branch->branch_id ? 'selected' : '' }}>
                                 {{ $branch->branch_code }}
                             </option>
                         @endforeach
@@ -78,16 +84,20 @@
                 <div class="col-md-2">
                     <select name="status" class="form-select form-select-sm">
                         <option value="">Semua Status</option>
-                        <option value="0" {{ ($filters['status'] ?? '') === '0' ? 'selected' : '' }}>Draft</option>
-                        <option value="1" {{ ($filters['status'] ?? '') === '1' ? 'selected' : '' }}>Proses</option>
-                        <option value="2" {{ ($filters['status'] ?? '') === '2' ? 'selected' : '' }}>Selesai</option>
+                        <option value="0" {{ ($filters['status'] ?? '') === '0' ? 'selected' : '' }}>Belum Diterima
+                        </option>
+                        <option value="1" {{ ($filters['status'] ?? '') === '1' ? 'selected' : '' }}>Diterima Sebagian
+                        </option>
+                        <option value="2" {{ ($filters['status'] ?? '') === '2' ? 'selected' : '' }}>Diterima Semua
+                        </option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-sm btn-primary w-100"><i class="bi bi-search"></i></button>
                 </div>
                 <div class="col-md-2">
-                    <a href="{{ route('transfers.index') }}" class="btn btn-sm btn-secondary w-100"><i class="bi bi-x-lg"></i></a>
+                    <a href="{{ route('transfers.index') }}" class="btn btn-sm btn-secondary w-100"><i
+                            class="bi bi-x-lg"></i></a>
                 </div>
             </form>
 
@@ -96,11 +106,14 @@
                     <thead class="table-dark">
                         <tr>
                             <th>No</th>
-                            <th>Code</th>
+                            <th>Transaction No</th>
                             <th>Date</th>
+                            <th>BA No</th>
+                            <th>Ref No</th>
                             <th>From</th>
                             <th>To</th>
                             <th>Status</th>
+                            <th>Canceled</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -110,23 +123,34 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td class="fw-medium">{{ $transfer->tth_code }}</td>
                                 <td>{{ $transfer->tth_date?->format('d/m/Y') ?? '-' }}</td>
+                                <td>{{ $transfer->tth_ba_no ?? '-' }}</td>
+                                <td>{{ $transfer->tth_po_no ?? '-' }}</td>
                                 <td>{{ $transfer->branch->branch_name ?? '-' }}</td>
                                 <td>{{ $transfer->branchTo->branch_name ?? '-' }}</td>
                                 <td>
-                                    @if($transfer->tth_status === '0')
-                                        <span class="badge bg-secondary">Draft</span>
+                                    @if ($transfer->tth_status === '0')
+                                        <span class="badge bg-secondary">Belum Diterima</span>
                                     @elseif($transfer->tth_status === '1')
-                                        <span class="badge bg-warning text-dark">Proses</span>
+                                        <span class="badge bg-warning text-dark">Diterima Sebagian</span>
                                     @else
-                                        <span class="badge bg-success">Selesai</span>
+                                        <span class="badge bg-success">Diterima Semua</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($transfer->tth_is_canceled === '1')
+                                        <span class="badge bg-danger">Ya</span>
+                                    @else
+                                        <span class="badge bg-success">Tidak</span>
                                     @endif
                                 </td>
                                 <td>
                                     <div class="d-flex gap-1">
-                                        <a href="{{ route('transfers.show', $transfer) }}" class="btn btn-sm btn-info text-white" title="View">
+                                        <a href="{{ route('transfers.show', $transfer) }}"
+                                            class="btn btn-sm btn-info text-white" title="View">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="{{ route('transfers.edit', $transfer) }}" class="btn btn-sm btn-warning text-white" title="Edit">
+                                        <a href="{{ route('transfers.edit', $transfer) }}"
+                                            class="btn btn-sm btn-warning text-white" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <form action="{{ route('transfers.destroy', $transfer) }}" method="POST">
@@ -140,7 +164,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-4 text-muted">Tidak ada data transfer.</td>
+                                <td colspan="10" class="text-center py-4 text-muted">Tidak ada data transfer.</td>
                             </tr>
                         @endforelse
                     </tbody>

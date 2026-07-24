@@ -103,7 +103,7 @@ class TransferController extends Controller
 
     public function show(TransferHeader $transfer): View
     {
-        $transfer->load(['details.itemDetail', 'details.warehouse', 'branch', 'branchTo', 'employee']);
+        $transfer->load(['details.itemDetail', 'details.warehouse', 'branch', 'branchTo', 'employee', 'creator']);
 
         return view('transfers.show', compact('transfer'));
     }

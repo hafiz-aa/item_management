@@ -37,17 +37,25 @@
                 <label class="form-label fw-bold">Status</label>
                 <div>
                     @if($transfer->tth_status === '0')
-                        <span class="badge bg-secondary">Draft</span>
+                        <span class="badge bg-secondary">Belum Diterima</span>
                     @elseif($transfer->tth_status === '1')
-                        <span class="badge bg-warning text-dark">Proses</span>
+                        <span class="badge bg-warning text-dark">Diterima Sebagian</span>
                     @else
-                        <span class="badge bg-success">Selesai</span>
+                        <span class="badge bg-success">Diterima Semua</span>
                     @endif
                 </div>
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-bold">Notes</label>
                 <div>{{ $transfer->tth_notes ?? '-' }}</div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Created By</label>
+                <div>{{ $transfer->creator->users_names ?? '-' }}</div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Created Date</label>
+                <div>{{ $transfer->created_time?->format('d/m/Y H:i') ?? '-' }}</div>
             </div>
         </div>
 

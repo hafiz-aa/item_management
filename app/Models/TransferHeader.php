@@ -60,12 +60,17 @@ class TransferHeader extends Model
         return $this->belongsTo(Employee::class, 'emp_id_sender', 'emp_id');
     }
 
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'users_id');
+    }
+
     public function getStatusLabelAttribute(): string
     {
         return match ($this->tth_status) {
-            '0' => 'Draft',
-            '1' => 'Proses',
-            '2' => 'Selesai',
+            '0' => 'Belum Diterima',
+            '1' => 'Diterima Sebagian',
+            '2' => 'Diterima Semua',
             default => '-',
         };
     }

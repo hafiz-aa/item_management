@@ -140,9 +140,9 @@ $(document).ready(function() {
                 <div class="col-md-3">
                     <label for="tth_status" class="form-label">Status <span class="text-danger">*</span></label>
                     <select class="form-select @error('tth_status') is-invalid @enderror" id="tth_status" name="tth_status" required>
-                        <option value="0" {{ old('tth_status') === '0' ? 'selected' : '' }}>Draft</option>
-                        <option value="1" {{ old('tth_status') === '1' ? 'selected' : '' }}>Proses</option>
-                        <option value="2" {{ old('tth_status') === '2' ? 'selected' : '' }}>Selesai</option>
+                        <option value="0" {{ old('tth_status') === '0' ? 'selected' : '' }}>Belum Diterima</option>
+                        <option value="1" {{ old('tth_status') === '1' ? 'selected' : '' }}>Diterima Sebagian</option>
+                        <option value="2" {{ old('tth_status') === '2' ? 'selected' : '' }}>Diterima Semua</option>
                     </select>
                     @error('tth_status') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
