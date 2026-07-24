@@ -104,11 +104,63 @@
             </li>
 
             <li class="nav-item px-2 mb-1">
-                <a href="{{ route('transfers.index') }}"
-                    class="nav-link text-white {{ request()->routeIs('transfers.*') ? 'active bg-primary' : '' }}"
-                    data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Transfer Item">
-                    <i class="bi bi-arrow-left-right me-2"></i><span class="sidebar-label">Transfer Item</span>
-                </a>
+                <button class="nav-link text-white w-100 text-start {{ request()->routeIs('transfers.*', 'transactions.*') ? 'active bg-primary' : '' }}"
+                    data-bs-toggle="collapse" data-bs-target="#transactionMenu">
+                    <i class="bi bi-arrow-left-right me-2"></i><span class="sidebar-label">Transaction</span>
+                    <i class="bi bi-chevron-down float-end mt-1"></i>
+                </button>
+                <div id="transactionMenu" class="collapse {{ request()->routeIs('transfers.*', 'transactions.*') ? 'show' : '' }}">
+                    <ul class="nav nav-pills flex-column ps-3">
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('transfers.index') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transfers.*') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-arrow-left-right me-2"></i><span class="sidebar-label">Transfer Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('transactions.receive') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.receive') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-box-arrow-in-down me-2"></i><span class="sidebar-label">Receive Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('transactions.issue') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.issue') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-box-arrow-up me-2"></i><span class="sidebar-label">Issue Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('transactions.return') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.return') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-arrow-return-left me-2"></i><span class="sidebar-label">Return Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('transactions.broken') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.broken') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-exclamation-triangle me-2"></i><span class="sidebar-label">Broken Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('transactions.write-off') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.write-off') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-x-octagon me-2"></i><span class="sidebar-label">Write-off Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('transactions.disposal') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.disposal') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-trash me-2"></i><span class="sidebar-label">Disposal Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('transactions.change-description') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.change-description') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-pencil-square me-2"></i><span class="sidebar-label">Change Item Description</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
 
             <li class="nav-item px-2 mt-2 mb-1 sidebar-section-header">

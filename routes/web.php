@@ -17,6 +17,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\UomController;
 use App\Http\Controllers\UserController;
@@ -93,6 +94,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('vendors', VendorController::class)->except('show');
 
     Route::resource('transfers', TransferController::class);
+
+    Route::prefix('transactions')->name('transactions.')->group(function () {
+        Route::get('receive', [TransactionController::class, 'receive'])->name('receive');
+        Route::get('issue', [TransactionController::class, 'issue'])->name('issue');
+        Route::get('return', [TransactionController::class, 'returnItem'])->name('return');
+        Route::get('broken', [TransactionController::class, 'broken'])->name('broken');
+        Route::get('write-off', [TransactionController::class, 'writeOff'])->name('write-off');
+        Route::get('disposal', [TransactionController::class, 'disposal'])->name('disposal');
+        Route::get('change-description', [TransactionController::class, 'changeDescription'])->name('change-description');
+    });
 
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('transaction-period', [SettingController::class, 'transactionPeriod'])->name('transaction-period');
