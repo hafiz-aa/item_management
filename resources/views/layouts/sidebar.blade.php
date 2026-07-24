@@ -100,6 +100,18 @@
             @endcan
 
             <li class="nav-item px-2 mt-2 mb-1 sidebar-section-header">
+                <small class="text-secondary text-uppercase px-2 fw-bold sidebar-label">Transaction</small>
+            </li>
+
+            <li class="nav-item px-2 mb-1">
+                <a href="{{ route('transfers.index') }}"
+                    class="nav-link text-white {{ request()->routeIs('transfers.*') ? 'active bg-primary' : '' }}"
+                    data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Transfer Item">
+                    <i class="bi bi-arrow-left-right me-2"></i><span class="sidebar-label">Transfer Item</span>
+                </a>
+            </li>
+
+            <li class="nav-item px-2 mt-2 mb-1 sidebar-section-header">
                 <small class="text-secondary text-uppercase px-2 fw-bold sidebar-label">Settings</small>
             </li>
 
