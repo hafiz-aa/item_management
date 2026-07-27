@@ -58,6 +58,12 @@ class ItemRepository extends BaseRepository
             });
         }
 
+        if (! empty($filters['branch_id'])) {
+            $query->whereHas('details', function (Builder $q) use ($filters) {
+                $q->where('branch_id', $filters['branch_id']);
+            });
+        }
+
         $sortField = $filters['sort_field'] ?? 'master_item.masti_id';
         $sortOrder = $filters['sort_order'] ?? 'desc';
         $query->orderBy($sortField, $sortOrder);

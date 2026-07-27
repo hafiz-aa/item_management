@@ -44,6 +44,13 @@ class ItemSummaryController extends Controller
             $query->where('master_item.cati_id', $request->cati_id);
         }
 
+        $branchFilter = session('branch_filter');
+        if ($branchFilter) {
+            $query->whereHas('details', function ($q) use ($branchFilter) {
+                $q->where('item_detail.branch_id', $branchFilter);
+            });
+        }
+
         $items = $query->orderBy('master_item.masti_code', 'asc')
             ->paginate($request->get('per_page', 25))
             ->withQueryString();

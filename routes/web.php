@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\BranchFilterController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\DashboardController;
@@ -83,6 +84,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('import', [ImportController::class, 'import'])->name('import.process');
         Route::get('import/result', [ImportController::class, 'result'])->name('import.result');
     });
+
+    Route::post('branch-filter', [BranchFilterController::class, 'set'])->name('branch-filter.set');
+    Route::delete('branch-filter', [BranchFilterController::class, 'clear'])->name('branch-filter.clear');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -23,9 +23,13 @@ class WarehouseController extends Controller
     public function index(Request $request): View
     {
         $warehouses = $this->warehouseService->getForUser($request->user())
-            ->where('whsl_type', '0')
-            ->values()
-            ->load('children.children.children');
+            ->where('whsl_type', '0');
+
+        if (session('branch_filter')) {
+            $warehouses->where('branch_id', session('branch_filter'));
+        }
+
+        $warehouses = $warehouses->values()->load('children.children.children');
 
         return view('warehouses.index', compact('warehouses'));
     }

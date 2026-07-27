@@ -47,8 +47,11 @@ class ItemAllBranchesController extends Controller
             });
         }
 
+        $branchFilter = session('branch_filter');
         if ($request->filled('branch_id')) {
             $query->where('item_detail.branch_id', $request->branch_id);
+        } elseif ($branchFilter) {
+            $query->where('item_detail.branch_id', $branchFilter);
         }
 
         if ($request->filled('status')) {

@@ -38,6 +38,10 @@ class ItemController extends Controller
             $filters['warehouse_ids'] = $user->branches->pluck('branch_id')->toArray();
         }
 
+        if (session('branch_filter')) {
+            $filters['branch_id'] = session('branch_filter');
+        }
+
         $items = $this->itemService->search($filters);
         $warehouses = $this->warehouseService->getForUser($user);
         $catIds = $this->itemService->getCatIds();

@@ -37,8 +37,11 @@ class TransferController extends Controller
             $query->where('transfer_header.tth_status', $request->status);
         }
 
+        $branchFilter = session('branch_filter');
         if ($request->filled('branch_id')) {
             $query->where('transfer_header.branch_id', $request->branch_id);
+        } elseif ($branchFilter) {
+            $query->where('transfer_header.branch_id', $branchFilter);
         }
 
         $transfers = $query->orderBy('transfer_header.tth_date', 'desc')

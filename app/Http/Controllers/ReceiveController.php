@@ -31,6 +31,11 @@ class ReceiveController extends Controller
             $query->where('receipt_transfer_header.rth_is_canceled', $request->status);
         }
 
+        $branchFilter = session('branch_filter');
+        if ($branchFilter) {
+            $query->where('receipt_transfer_header.branch_id', $branchFilter);
+        }
+
         $receives = $query->orderBy('receipt_transfer_header.rth_date', 'desc')
             ->orderBy('receipt_transfer_header.rth_id', 'desc')
             ->paginate($request->get('per_page', 25))
