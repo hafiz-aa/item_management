@@ -66,38 +66,23 @@
         </div>
         <div class="card-body">
             <form method="GET" action="{{ route('transfers.index') }}" class="row g-2 mb-3">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <input type="text" name="search" class="form-control form-control-sm" placeholder="Search..."
                         value="{{ $filters['search'] ?? '' }}">
                 </div>
-                <div class="col-md-2">
-                    <select name="branch_id" class="form-select form-select-sm">
-                        <option value="">Semua Branch</option>
-                        @foreach ($branches as $branch)
-                            <option value="{{ $branch->branch_id }}"
-                                {{ ($filters['branch_id'] ?? '') == $branch->branch_id ? 'selected' : '' }}>
-                                {{ $branch->branch_code }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <select name="status" class="form-select form-select-sm">
                         <option value="">Semua Status</option>
-                        <option value="0" {{ ($filters['status'] ?? '') === '0' ? 'selected' : '' }}>Belum Diterima
-                        </option>
-                        <option value="1" {{ ($filters['status'] ?? '') === '1' ? 'selected' : '' }}>Diterima Sebagian
-                        </option>
-                        <option value="2" {{ ($filters['status'] ?? '') === '2' ? 'selected' : '' }}>Diterima Semua
-                        </option>
+                        <option value="0" {{ ($filters['status'] ?? '') === '0' ? 'selected' : '' }}>Belum Diterima</option>
+                        <option value="1" {{ ($filters['status'] ?? '') === '1' ? 'selected' : '' }}>Diterima Sebagian</option>
+                        <option value="2" {{ ($filters['status'] ?? '') === '2' ? 'selected' : '' }}>Diterima Semua</option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-sm btn-primary w-100"><i class="bi bi-search"></i></button>
                 </div>
                 <div class="col-md-2">
-                    <a href="{{ route('transfers.index') }}" class="btn btn-sm btn-secondary w-100"><i
-                            class="bi bi-x-lg"></i></a>
+                    <a href="{{ route('transfers.index') }}" class="btn btn-sm btn-secondary w-100"><i class="bi bi-x-lg"></i></a>
                 </div>
             </form>
 
@@ -110,7 +95,6 @@
                             <th>Date</th>
                             <th>BA No</th>
                             <th>Ref No</th>
-                            <th>From</th>
                             <th>To</th>
                             <th>Status</th>
                             <th>Canceled</th>
@@ -125,7 +109,6 @@
                                 <td>{{ $transfer->tth_date?->format('d/m/Y') ?? '-' }}</td>
                                 <td>{{ $transfer->tth_ba_no ?? '-' }}</td>
                                 <td>{{ $transfer->tth_po_no ?? '-' }}</td>
-                                <td>{{ $transfer->branch->branch_name ?? '-' }}</td>
                                 <td>{{ $transfer->branchTo->branch_name ?? '-' }}</td>
                                 <td>
                                     @if ($transfer->tth_status === '0')
@@ -164,7 +147,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="text-center py-4 text-muted">Tidak ada data transfer.</td>
+                                <td colspan="9" class="text-center py-4 text-muted">Tidak ada data transfer.</td>
                             </tr>
                         @endforelse
                     </tbody>

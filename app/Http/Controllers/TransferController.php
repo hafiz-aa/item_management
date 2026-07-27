@@ -18,7 +18,7 @@ class TransferController extends Controller
     public function index(Request $request): View
     {
         $query = TransferHeader::query()
-            ->with(['branch', 'branchTo']);
+            ->with(['branchTo']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -38,9 +38,7 @@ class TransferController extends Controller
         }
 
         $branchFilter = session('branch_filter');
-        if ($request->filled('branch_id')) {
-            $query->where('transfer_header.branch_id', $request->branch_id);
-        } elseif ($branchFilter) {
+        if ($branchFilter) {
             $query->where('transfer_header.branch_id', $branchFilter);
         }
 
@@ -49,10 +47,9 @@ class TransferController extends Controller
             ->paginate($request->get('per_page', 25))
             ->withQueryString();
 
-        $branches = Branch::orderBy('branch_code')->get();
-        $filters = $request->only(['search', 'status', 'branch_id']);
+        $filters = $request->only(['search', 'status']);
 
-        return view('transfers.index', compact('transfers', 'branches', 'filters'));
+        return view('transfers.index', compact('transfers', 'filters'));
     }
 
     public function create(): View
