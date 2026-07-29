@@ -118,7 +118,7 @@
                             </a>
                         </li>
                         <li class="nav-item mb-1">
-                            <a href="{{ route('transactions.receive') }}"
+                            <a href="{{ route('transactions.receive.index') }}"
                                 class="nav-link text-white py-1 {{ request()->routeIs('transactions.receive') ? 'active bg-primary' : '' }}">
                                 <i class="bi bi-box-arrow-in-down me-2"></i><span class="sidebar-label">Receive Item</span>
                             </a>

@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\IssuingController;
 use App\Http\Controllers\ItemAllBranchesController;
 use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\ItemController;
@@ -101,8 +102,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('transfers', TransferController::class);
 
     Route::prefix('transactions')->name('transactions.')->group(function () {
-        Route::get('receive', [ReceiveController::class, 'index'])->name('receive');
-        Route::get('issue', [TransactionController::class, 'issue'])->name('issue');
+        Route::resource('receive', ReceiveController::class);
+        Route::get('issue', [IssuingController::class, 'index'])->name('issue');
         Route::get('return', [TransactionController::class, 'returnItem'])->name('return');
         Route::get('broken', [TransactionController::class, 'broken'])->name('broken');
         Route::get('write-off', [TransactionController::class, 'writeOff'])->name('write-off');
