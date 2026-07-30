@@ -28,4 +28,14 @@ class ReturnDetail extends Model
     {
         return $this->belongsTo(ReturnHeader::class, 'reth_id', 'reth_id');
     }
+
+    public function issuingDetail(): BelongsTo
+    {
+        return $this->belongsTo(IssuingDetail::class, 'issuingd_id', 'issuingd_id');
+    }
+
+    public function warehouseNew(): BelongsTo
+    {
+        return $this->belongsTo(Warehouse::class, 'whsl_id', 'whsl_id');
+    }
 }

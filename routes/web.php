@@ -105,7 +105,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('transactions')->name('transactions.')->group(function () {
         Route::resource('receive', ReceiveController::class);
         Route::get('issue', [IssuingController::class, 'index'])->name('issue');
-        Route::get('return', [ReturnController::class, 'index'])->name('return');
+        Route::resource('return', ReturnController::class);
         Route::get('broken', [TransactionController::class, 'broken'])->name('broken');
         Route::get('write-off', [TransactionController::class, 'writeOff'])->name('write-off');
         Route::get('disposal', [TransactionController::class, 'disposal'])->name('disposal');

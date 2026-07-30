@@ -130,8 +130,8 @@
                             </a>
                         </li>
                         <li class="nav-item mb-1">
-                            <a href="{{ route('transactions.return') }}"
-                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.return') ? 'active bg-primary' : '' }}">
+                            <a href="{{ route('transactions.return.index') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.return.*') ? 'active bg-primary' : (request()->routeIs('transactions.return') ? 'active bg-primary' : '') }}">
                                 <i class="bi bi-arrow-return-left me-2"></i><span class="sidebar-label">Return Item</span>
                             </a>
                         </li>

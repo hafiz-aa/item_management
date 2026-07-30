@@ -65,6 +65,11 @@ class ItemDetail extends Model
         return $this->belongsTo(Branch::class, 'original_branch_id', 'branch_id');
     }
 
+    public function uom()
+    {
+        return $this->belongsTo(Uom::class, 'uom_id', 'uom_id');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('itemd_status', '0');
