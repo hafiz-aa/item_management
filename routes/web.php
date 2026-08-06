@@ -28,6 +28,7 @@ use App\Http\Controllers\UomController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\WriteOffController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -108,7 +109,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('issue', IssuingController::class);
         Route::resource('return', ReturnController::class);
         Route::get('broken', [BrokenController::class, 'index'])->name('broken');
-        Route::get('write-off', [TransactionController::class, 'writeOff'])->name('write-off');
+        Route::get('write-off', [WriteOffController::class, 'index'])->name('write-off');
         Route::get('disposal', [TransactionController::class, 'disposal'])->name('disposal');
         Route::get('change-description', [TransactionController::class, 'changeDescription'])->name('change-description');
     });
