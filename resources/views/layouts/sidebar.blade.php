@@ -119,13 +119,13 @@
                         </li>
                         <li class="nav-item mb-1">
                             <a href="{{ route('transactions.receive.index') }}"
-                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.receive') ? 'active bg-primary' : '' }}">
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.receive.*') ? 'active bg-primary' : '' }}">
                                 <i class="bi bi-box-arrow-in-down me-2"></i><span class="sidebar-label">Receive Item</span>
                             </a>
                         </li>
                         <li class="nav-item mb-1">
-                            <a href="{{ route('transactions.issue') }}"
-                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.issue') ? 'active bg-primary' : '' }}">
+                            <a href="{{ route('transactions.issue.index') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.issue.*') ? 'active bg-primary' : '' }}">
                                 <i class="bi bi-box-arrow-up me-2"></i><span class="sidebar-label">Issue Item</span>
                             </a>
                         </li>

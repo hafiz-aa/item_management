@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\BranchFilterController;
+use App\Http\Controllers\BrokenController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\DashboardController;
@@ -104,9 +105,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('transactions')->name('transactions.')->group(function () {
         Route::resource('receive', ReceiveController::class);
-        Route::get('issue', [IssuingController::class, 'index'])->name('issue');
+        Route::resource('issue', IssuingController::class);
         Route::resource('return', ReturnController::class);
-        Route::get('broken', [TransactionController::class, 'broken'])->name('broken');
+        Route::get('broken', [BrokenController::class, 'index'])->name('broken');
         Route::get('write-off', [TransactionController::class, 'writeOff'])->name('write-off');
         Route::get('disposal', [TransactionController::class, 'disposal'])->name('disposal');
         Route::get('change-description', [TransactionController::class, 'changeDescription'])->name('change-description');

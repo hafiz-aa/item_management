@@ -12,6 +12,7 @@
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
             $('#issuingTable').DataTable({
@@ -34,17 +35,37 @@
                     [10, 25, 50, 100, "Semua"]
                 ]
             });
+
+            $('.btn-delete').on('click', function(e) {
+                e.preventDefault();
+                var form = $(this).closest('form');
+                Swal.fire({
+                    title: 'Konfirmasi Hapus',
+                    text: 'Apakah Anda yakin ingin menghapus issue ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) form.submit();
+                });
+            });
         });
     </script>
 @endpush
 
 @section('content')
     <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white py-3">
+        <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
             <h5 class="fw-bold mb-0">Issue Item</h5>
+            <a href="{{ route('transactions.issue.create') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg"></i> Tambah Issue Baru
+            </a>
         </div>
         <div class="card-body">
-            <form method="GET" action="{{ route('transactions.issue') }}" class="row g-2 mb-3">
+            <form method="GET" action="{{ route('transactions.issue.index') }}" class="row g-2 mb-3">
                 <div class="col-md-4">
                     <input type="text" name="search" class="form-control form-control-sm" placeholder="Search..."
                         value="{{ $filters['search'] ?? '' }}">
@@ -60,7 +81,7 @@
                     <button type="submit" class="btn btn-sm btn-primary w-100"><i class="bi bi-search"></i></button>
                 </div>
                 <div class="col-md-2">
-                    <a href="{{ route('transactions.issue') }}" class="btn btn-sm btn-secondary w-100"><i class="bi bi-x-lg"></i></a>
+                    <a href="{{ route('transactions.issue.index') }}" class="btn btn-sm btn-secondary w-100"><i class="bi bi-x-lg"></i></a>
                 </div>
             </form>
 
@@ -80,6 +101,7 @@
                             <th>Total Qty</th>
                             <th>Cancel</th>
                             <th>Notes</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -119,10 +141,28 @@
                                 <td class="text-truncate" style="max-width: 150px;" title="{{ $issuing->issuingh_notes ?? '' }}">
                                     {{ $issuing->issuingh_notes ?? '-' }}
                                 </td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <a href="{{ route('transactions.issue.show', $issuing) }}"
+                                            class="btn btn-sm btn-info text-white" title="View">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="{{ route('transactions.issue.edit', $issuing) }}"
+                                            class="btn btn-sm btn-warning text-white" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form action="{{ route('transactions.issue.destroy', $issuing) }}" method="POST">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="12" class="text-center py-4 text-muted">Tidak ada data issuing.</td>
+                                <td colspan="13" class="text-center py-4 text-muted">Tidak ada data issuing.</td>
                             </tr>
                         @endforelse
                     </tbody>
