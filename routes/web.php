@@ -7,6 +7,7 @@ use App\Http\Controllers\BrokenController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DisposalController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImportController;
@@ -110,7 +111,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('return', ReturnController::class);
         Route::get('broken', [BrokenController::class, 'index'])->name('broken');
         Route::get('write-off', [WriteOffController::class, 'index'])->name('write-off');
-        Route::get('disposal', [TransactionController::class, 'disposal'])->name('disposal');
+        Route::get('disposal', [DisposalController::class, 'index'])->name('disposal');
         Route::get('change-description', [TransactionController::class, 'changeDescription'])->name('change-description');
     });
 
