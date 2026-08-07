@@ -4,6 +4,7 @@ use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\BranchFilterController;
 use App\Http\Controllers\BrokenController;
+use App\Http\Controllers\ChangeDescriptionController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\DashboardController;
@@ -23,7 +24,6 @@ use App\Http\Controllers\ReceiveController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
-use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\UomController;
 use App\Http\Controllers\UserController;
@@ -112,7 +112,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('broken', [BrokenController::class, 'index'])->name('broken');
         Route::get('write-off', [WriteOffController::class, 'index'])->name('write-off');
         Route::get('disposal', [DisposalController::class, 'index'])->name('disposal');
-        Route::get('change-description', [TransactionController::class, 'changeDescription'])->name('change-description');
+        Route::get('change-description', [ChangeDescriptionController::class, 'index'])->name('change-description');
     });
 
     Route::prefix('settings')->name('settings.')->group(function () {
