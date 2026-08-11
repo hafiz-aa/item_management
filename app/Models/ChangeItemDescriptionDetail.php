@@ -32,4 +32,14 @@ class ChangeItemDescriptionDetail extends Model
     {
         return $this->belongsTo(ItemDetail::class, 'itemd_id', 'itemd_id');
     }
+
+    public function oldMaster(): BelongsTo
+    {
+        return $this->belongsTo(MasterItem::class, 'masti_id_old', 'masti_id');
+    }
+
+    public function newMaster(): BelongsTo
+    {
+        return $this->belongsTo(MasterItem::class, 'masti_id_new', 'masti_id');
+    }
 }

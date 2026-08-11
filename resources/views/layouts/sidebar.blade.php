@@ -154,8 +154,8 @@
                             </a>
                         </li>
                         <li class="nav-item mb-1">
-                            <a href="{{ route('transactions.change-description') }}"
-                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.change-description') ? 'active bg-primary' : '' }}">
+                            <a href="{{ route('transactions.change-description.index') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.change-description.*') ? 'active bg-primary' : '' }}">
                                 <i class="bi bi-pencil-square me-2"></i><span class="sidebar-label">Change Item Description</span>
                             </a>
                         </li>

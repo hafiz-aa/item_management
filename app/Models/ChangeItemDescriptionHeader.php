@@ -42,6 +42,11 @@ class ChangeItemDescriptionHeader extends Model
         return $this->belongsTo(Branch::class, 'branch_id', 'branch_id');
     }
 
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by', 'users_id');
+    }
+
     public function details(): HasMany
     {
         return $this->hasMany(ChangeItemDescriptionDetail::class, 'cidh_id', 'cidh_id');
