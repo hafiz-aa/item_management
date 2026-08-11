@@ -148,8 +148,8 @@
                             </a>
                         </li>
                         <li class="nav-item mb-1">
-                            <a href="{{ route('transactions.disposal') }}"
-                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.disposal') ? 'active bg-primary' : '' }}">
+                            <a href="{{ route('transactions.disposal.index') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.disposal.*') ? 'active bg-primary' : '' }}">
                                 <i class="bi bi-trash me-2"></i><span class="sidebar-label">Disposal Item</span>
                             </a>
                         </li>

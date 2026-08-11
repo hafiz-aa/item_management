@@ -57,6 +57,16 @@ class DisposalHeader extends Model
         return $this->belongsTo(Customer::class, 'cust_id', 'cust_id');
     }
 
+    public function disposedBy(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'emp_id_dispossed_by', 'emp_id');
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by', 'users_id');
+    }
+
     public function details(): HasMany
     {
         return $this->hasMany(DisposalDetail::class, 'disph_id', 'disph_id');
