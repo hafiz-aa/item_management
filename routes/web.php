@@ -109,7 +109,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('receive', ReceiveController::class);
         Route::resource('issue', IssuingController::class);
         Route::resource('return', ReturnController::class);
-        Route::get('broken', [BrokenController::class, 'index'])->name('broken');
+        Route::get('broken/search-items', [BrokenController::class, 'itemDetails'])->name('broken.search-items');
+        Route::resource('broken', BrokenController::class);
         Route::get('write-off', [WriteOffController::class, 'index'])->name('write-off');
         Route::get('disposal', [DisposalController::class, 'index'])->name('disposal');
         Route::get('change-description/search-items', [ChangeDescriptionController::class, 'itemDetails'])->name('change-description.search-items');

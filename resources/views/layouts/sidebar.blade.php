@@ -136,8 +136,8 @@
                             </a>
                         </li>
                         <li class="nav-item mb-1">
-                            <a href="{{ route('transactions.broken') }}"
-                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.broken') ? 'active bg-primary' : '' }}">
+                            <a href="{{ route('transactions.broken.index') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('transactions.broken.*') ? 'active bg-primary' : '' }}">
                                 <i class="bi bi-exclamation-triangle me-2"></i><span class="sidebar-label">Broken Item</span>
                             </a>
                         </li>
