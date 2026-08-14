@@ -70,6 +70,11 @@ class ItemDetail extends Model
         return $this->belongsTo(Uom::class, 'uom_id', 'uom_id');
     }
 
+    public function vendor()
+    {
+        return $this->belongsTo(Customer::class, 'vend_id', 'cust_id');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('itemd_status', '0');

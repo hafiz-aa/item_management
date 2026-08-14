@@ -164,6 +164,76 @@
             </li>
 
             <li class="nav-item px-2 mt-2 mb-1 sidebar-section-header">
+                <small class="text-secondary text-uppercase px-2 fw-bold sidebar-label">Report</small>
+            </li>
+
+            <li class="nav-item px-2 mb-1">
+                <button class="nav-link text-white w-100 text-start {{ request()->routeIs('reports.*') ? 'active bg-primary' : '' }}"
+                    data-bs-toggle="collapse" data-bs-target="#reportMenu">
+                    <i class="bi bi-clipboard-data me-2"></i><span class="sidebar-label">Report</span>
+                    <i class="bi bi-chevron-down float-end mt-1"></i>
+                </button>
+                <div id="reportMenu" class="collapse {{ request()->routeIs('reports.*') ? 'show' : '' }}">
+                    <ul class="nav nav-pills flex-column ps-3">
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('reports.transfer') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('reports.transfer') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-arrow-left-right me-2"></i><span class="sidebar-label">Report Transfer Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('reports.issuing') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('reports.issuing') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-box-arrow-up me-2"></i><span class="sidebar-label">Report Issuing Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('reports.returning') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('reports.returning') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-arrow-return-left me-2"></i><span class="sidebar-label">Report Returning Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('reports.broken') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('reports.broken') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-exclamation-triangle me-2"></i><span class="sidebar-label">Report Broken Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('reports.write-off') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('reports.write-off') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-x-octagon me-2"></i><span class="sidebar-label">Report Write-off Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('reports.disposal') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('reports.disposal') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-trash me-2"></i><span class="sidebar-label">Report Disposal Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('reports.position') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('reports.position') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-diagram-3 me-2"></i><span class="sidebar-label">Report Position Item</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('reports.aging') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('reports.aging') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-hourglass-split me-2"></i><span class="sidebar-label">Report Aging</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-1">
+                            <a href="{{ route('reports.vendor') }}"
+                                class="nav-link text-white py-1 {{ request()->routeIs('reports.vendor') ? 'active bg-primary' : '' }}">
+                                <i class="bi bi-truck me-2"></i><span class="sidebar-label">Report Vendor</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="nav-item px-2 mt-2 mb-1 sidebar-section-header">
                 <small class="text-secondary text-uppercase px-2 fw-bold sidebar-label">Settings</small>
             </li>
 

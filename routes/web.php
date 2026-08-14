@@ -21,6 +21,7 @@ use App\Http\Controllers\ItemSummaryController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReceiveController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
@@ -120,6 +121,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('transaction-period', [SettingController::class, 'transactionPeriod'])->name('transaction-period');
+    });
+
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('transfer', [ReportController::class, 'transfer'])->name('transfer');
+        Route::get('issuing', [ReportController::class, 'issuing'])->name('issuing');
+        Route::get('returning', [ReportController::class, 'returning'])->name('returning');
+        Route::get('broken', [ReportController::class, 'broken'])->name('broken');
+        Route::get('write-off', [ReportController::class, 'writeOff'])->name('write-off');
+        Route::get('disposal', [ReportController::class, 'disposal'])->name('disposal');
+        Route::get('position', [ReportController::class, 'position'])->name('position');
+        Route::get('aging', [ReportController::class, 'aging'])->name('aging');
+        Route::get('vendor', [ReportController::class, 'vendor'])->name('vendor');
     });
 });
 

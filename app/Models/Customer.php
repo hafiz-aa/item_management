@@ -37,4 +37,9 @@ class Customer extends Model
     {
         return $this->belongsTo(CustomerType::class, 'custtp_id', 'custtp_id');
     }
+
+    public function items()
+    {
+        return $this->hasMany(ItemDetail::class, 'vend_id', 'cust_id');
+    }
 }
