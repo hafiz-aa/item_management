@@ -22,6 +22,13 @@ class MasterItem extends Model
         'cati_id',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'masti_capacity' => 'float',
+        ];
+    }
+
     public function category()
     {
         return $this->belongsTo(ItemCategory::class, 'cati_id', 'cati_id');
@@ -35,5 +42,17 @@ class MasterItem extends Model
     public function details()
     {
         return $this->hasMany(ItemDetail::class, 'masti_id', 'masti_id');
+    }
+
+    public function vendor()
+    {
+        return $this->hasOneThrough(
+            Customer::class,
+            ItemDetail::class,
+            'masti_id',
+            'cust_id',
+            'masti_id',
+            'vend_id'
+        );
     }
 }

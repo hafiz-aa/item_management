@@ -35,9 +35,9 @@ class ItemService extends BaseService
         return DB::transaction(function () use ($data) {
             $headerData = [
                 'comp_id' => $data['comp_id'] ?? 0,
-                'masti_code' => $data['item_code'],
-                'masti_name' => $data['item_name'] ?? null,
-                'masti_capacity' => $data['capacity'] ?? null,
+                'masti_code' => $data['masti_code'],
+                'masti_name' => $data['masti_name'] ?? null,
+                'masti_capacity' => $data['masti_capacity'] ?? null,
                 'uom_id_1' => $data['uom_id_1'] ?? 1,
                 'uom_id_2' => $data['uom_id_2'] ?? 0,
                 'cati_id' => $data['cati_id'] ?? null,
@@ -82,9 +82,9 @@ class ItemService extends BaseService
         return DB::transaction(function () use ($header, $data) {
             $headerData = array_filter([
                 'comp_id' => $data['comp_id'] ?? null,
-                'masti_code' => $data['item_code'] ?? null,
-                'masti_name' => $data['item_name'] ?? null,
-                'masti_capacity' => $data['capacity'] ?? null,
+                'masti_code' => $data['masti_code'] ?? null,
+                'masti_name' => $data['masti_name'] ?? null,
+                'masti_capacity' => $data['masti_capacity'] ?? null,
                 'uom_id_1' => $data['uom_id_1'] ?? null,
                 'uom_id_2' => $data['uom_id_2'] ?? null,
                 'cati_id' => $data['cati_id'] ?? null,

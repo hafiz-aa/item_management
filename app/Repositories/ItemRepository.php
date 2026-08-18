@@ -22,7 +22,7 @@ class ItemRepository extends BaseRepository
     public function search(array $filters = []): LengthAwarePaginator
     {
         $query = $this->model->newQuery()
-            ->with(['details.warehouse', 'category'])
+            ->with(['details.warehouse', 'category', 'vendor'])
             ->withCount('details');
 
         if (! empty($filters['search'])) {

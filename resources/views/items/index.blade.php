@@ -158,6 +158,7 @@
                             <th>Item Code</th>
                             <th>Item Name</th>
                             <th>Category</th>
+                            <th>Vendor</th>
                             <th>Capacity</th>
                             <th>Details</th>
                             <th>Actions</th>
@@ -173,6 +174,7 @@
                                         class="text-decoration-none fw-medium">{{ $item->masti_code }}</a></td>
                                 <td>{{ $item->masti_name ?? '-' }}</td>
                                 <td><span class="badge bg-info">{{ $item->category->cati_name ?? '-' }}</span></td>
+                                <td>{{ $item->vendor->cust_name ?? '-' }}</td>
                                 <td>{{ number_format($item->masti_capacity, 2) }} {{ $item->uom_id_1 }}</td>
                                 <td>
                                     <span class="badge bg-secondary">{{ $item->details_count }} detail(s)</span>
@@ -202,7 +204,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-4 text-muted">No items found.</td>
+                                <td colspan="8" class="text-center py-4 text-muted">No items found.</td>
                             </tr>
                         @endforelse
                     </tbody>
