@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTransferRequest;
 use App\Http\Requests\UpdateTransferRequest;
 use App\Models\Branch;
 use App\Models\Employee;
+use App\Models\ItemDetail;
 use App\Models\TransferHeader;
 use App\Models\Warehouse;
 use Illuminate\Http\RedirectResponse;
@@ -80,8 +81,10 @@ class TransferController extends Controller
 
             if ($request->has('details')) {
                 foreach ($request->details as $detail) {
+                    $itemDetail = ItemDetail::with('header')->find($detail['itemd_id']);
                     $transfer->details()->create([
                         'itemd_id' => $detail['itemd_id'],
+                        'itemd_name' => $itemDetail?->header?->masti_name,
                         'whsl_id_from' => $detail['whsl_id_from'],
                         'ttd_status' => $detail['ttd_status'] ?? '0',
                         'ttd_notes' => $detail['ttd_notes'] ?? '',
@@ -138,8 +141,10 @@ class TransferController extends Controller
 
             if ($request->has('details')) {
                 foreach ($request->details as $detail) {
+                    $itemDetail = ItemDetail::with('header')->find($detail['itemd_id']);
                     $transfer->details()->create([
                         'itemd_id' => $detail['itemd_id'],
+                        'itemd_name' => $itemDetail?->header?->masti_name,
                         'whsl_id_from' => $detail['whsl_id_from'],
                         'ttd_status' => $detail['ttd_status'] ?? '0',
                         'ttd_notes' => $detail['ttd_notes'] ?? '',

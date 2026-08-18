@@ -15,6 +15,7 @@ class TransferDetail extends Model
     protected $fillable = [
         'tth_id',
         'itemd_id',
+        'itemd_name',
         'whsl_id_from',
         'ttd_status',
         'ttd_is_canceled',
