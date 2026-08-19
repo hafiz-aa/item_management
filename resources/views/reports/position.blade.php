@@ -40,6 +40,7 @@
         <div class="card-body">
             @include('reports.partials.filter', [
                 'action' => route('reports.position'),
+                'reportType' => 'position',
                 'extra' => '<div class="col-md-2"><select name="whsl_id" class="form-select form-select-sm"><option value="">Semua Warehouse</option>'.collect($warehouses)->map(function($w) use ($filters) { return '<option value="'.$w->whsl_id.'"'.(($filters['whsl_id'] ?? '') == $w->whsl_id ? ' selected' : '').'>'.$w->whsl_name.'</option>'; })->implode('').'</select></div>',
             ])
 

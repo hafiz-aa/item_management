@@ -40,6 +40,7 @@
         <div class="card-body">
             @include('reports.partials.filter', [
                 'action' => route('reports.issuing'),
+                'reportType' => 'issuing',
                 'extra' => '<div class="col-md-2"><select name="type" class="form-select form-select-sm"><option value="">Semua Type</option><option value="0" '.((($filters['type'] ?? '') === '0') ? 'selected' : '').'>Customer</option><option value="1" '.((($filters['type'] ?? '') === '1') ? 'selected' : '').'>Vendor</option></select></div>',
             ])
 

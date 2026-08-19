@@ -124,6 +124,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::prefix('reports')->name('reports.')->group(function () {
+        Route::middleware(['can:item.export'])->get('export', [ReportController::class, 'export'])->name('export');
         Route::get('transfer', [ReportController::class, 'transfer'])->name('transfer');
         Route::get('issuing', [ReportController::class, 'issuing'])->name('issuing');
         Route::get('returning', [ReportController::class, 'returning'])->name('returning');

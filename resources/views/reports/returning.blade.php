@@ -38,7 +38,7 @@
             <h5 class="fw-bold mb-0">Report Returning Item</h5>
         </div>
         <div class="card-body">
-            @include('reports.partials.filter', ['action' => route('reports.returning')])
+            @include('reports.partials.filter', ['action' => route('reports.returning'), 'reportType' => 'returning'])
 
             <div class="table-responsive">
                 <table id="reportTable" class="table table-hover table-striped align-middle" style="width:100%">

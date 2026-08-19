@@ -38,7 +38,7 @@
             <h5 class="fw-bold mb-0">Report Transfer Item</h5>
         </div>
         <div class="card-body">
-            @include('reports.partials.filter', ['action' => route('reports.transfer')])
+            @include('reports.partials.filter', ['action' => route('reports.transfer'), 'reportType' => 'transfer'])
 
             <div class="table-responsive">
                 <table id="reportTable" class="table table-hover table-striped align-middle" style="width:100%">

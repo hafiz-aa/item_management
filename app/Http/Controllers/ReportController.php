@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReportExport;
 use App\Models\BrokenDetail;
 use App\Models\Customer;
 use App\Models\DisposalDetail;
@@ -13,10 +14,141 @@ use App\Models\Warehouse;
 use App\Models\WriteOffDetail;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
     public function transfer(Request $request): View
+    {
+        $query = $this->buildTransferQuery($request);
+        $rows = $query->orderBy('transfer_header.tth_date', 'desc')
+            ->orderBy('transfer_header.tth_id', 'desc')
+            ->paginate($request->get('per_page', 25))
+            ->withQueryString();
+
+        $filters = $this->filters($request, ['search']);
+
+        return view('reports.transfer', compact('rows', 'filters'));
+    }
+
+    public function issuing(Request $request): View
+    {
+        $query = $this->buildIssuingQuery($request);
+        $rows = $query->orderBy('issuing_header.issuingh_date', 'desc')
+            ->orderBy('issuing_header.issuingh_id', 'desc')
+            ->paginate($request->get('per_page', 25))
+            ->withQueryString();
+
+        $filters = $this->filters($request, ['search', 'type']);
+
+        return view('reports.issuing', compact('rows', 'filters'));
+    }
+
+    public function returning(Request $request): View
+    {
+        $query = $this->buildReturningQuery($request);
+        $rows = $query->orderBy('return_header.reth_date', 'desc')
+            ->orderBy('return_header.reth_id', 'desc')
+            ->paginate($request->get('per_page', 25))
+            ->withQueryString();
+
+        $filters = $this->filters($request, ['search']);
+
+        return view('reports.returning', compact('rows', 'filters'));
+    }
+
+    public function broken(Request $request): View
+    {
+        $query = $this->buildBrokenQuery($request);
+        $rows = $query->orderBy('broken_header.brokh_date', 'desc')
+            ->orderBy('broken_header.brokh_id', 'desc')
+            ->paginate($request->get('per_page', 25))
+            ->withQueryString();
+
+        $filters = $this->filters($request, ['search', 'status']);
+
+        return view('reports.broken', compact('rows', 'filters'));
+    }
+
+    public function writeOff(Request $request): View
+    {
+        $query = $this->buildWriteOffQuery($request);
+        $rows = $query->orderBy('write_off_header.woh_date', 'desc')
+            ->orderBy('write_off_header.woh_id', 'desc')
+            ->paginate($request->get('per_page', 25))
+            ->withQueryString();
+
+        $filters = $this->filters($request, ['search']);
+
+        return view('reports.write-off', compact('rows', 'filters'));
+    }
+
+    public function disposal(Request $request): View
+    {
+        $query = $this->buildDisposalQuery($request);
+        $rows = $query->orderBy('dispossal_header.disph_date', 'desc')
+            ->orderBy('dispossal_header.disph_id', 'desc')
+            ->paginate($request->get('per_page', 25))
+            ->withQueryString();
+
+        $filters = $this->filters($request, ['search']);
+
+        return view('reports.disposal', compact('rows', 'filters'));
+    }
+
+    public function position(Request $request): View
+    {
+        $query = $this->buildPositionQuery($request);
+        $rows = $query->orderBy('item_detail.itemd_code')
+            ->paginate($request->get('per_page', 25))
+            ->withQueryString();
+
+        $filters = $this->filters($request, ['search', 'whsl_id']);
+        $warehouses = Warehouse::orderBy('whsl_code')->get();
+
+        return view('reports.position', compact('rows', 'filters', 'warehouses'));
+    }
+
+    public function aging(Request $request): View
+    {
+        $query = $this->buildAgingQuery($request);
+        $rows = $query->orderBy('item_detail.itemd_acquired_date')
+            ->paginate($request->get('per_page', 25))
+            ->withQueryString();
+
+        $filters = $this->filters($request, ['search', 'aging']);
+
+        return view('reports.aging', compact('rows', 'filters'));
+    }
+
+    public function vendor(Request $request): View
+    {
+        $query = $this->buildVendorQuery($request);
+        $rows = $query->orderBy('customer.cust_code')
+            ->paginate($request->get('per_page', 25))
+            ->withQueryString();
+
+        $filters = $this->filters($request, ['search']);
+
+        return view('reports.vendor', compact('rows', 'filters'));
+    }
+
+    public function export(Request $request)
+    {
+        $report = $request->get('report', '');
+        $validReports = ['transfer', 'issuing', 'returning', 'broken', 'write-off', 'disposal', 'position', 'aging', 'vendor'];
+
+        abort_unless(in_array($report, $validReports), 404);
+
+        $methodName = 'build'.str_replace('-', '', ucwords($report, '-')).'Query';
+        $query = $this->$methodName($request);
+
+        $fileName = 'report-'.$report.'-'.now()->format('Y-m-d').'.xlsx';
+
+        return Excel::download(new ReportExport($report, $query), $fileName);
+    }
+
+    private function buildTransferQuery(Request $request)
     {
         $query = TransferDetail::query()
             ->join('transfer_header', 'transfer_detail.tth_id', '=', 'transfer_header.tth_id')
@@ -50,17 +182,10 @@ class ReportController extends Controller
             });
         }
 
-        $rows = $query->orderBy('transfer_header.tth_date', 'desc')
-            ->orderBy('transfer_header.tth_id', 'desc')
-            ->paginate($request->get('per_page', 25))
-            ->withQueryString();
-
-        $filters = $this->filters($request, ['search']);
-
-        return view('reports.transfer', compact('rows', 'filters'));
+        return $query;
     }
 
-    public function issuing(Request $request): View
+    private function buildIssuingQuery(Request $request)
     {
         $query = IssuingDetail::query()
             ->join('issuing_header', 'issuing_detail.issuingh_id', '=', 'issuing_header.issuingh_id')
@@ -97,17 +222,10 @@ class ReportController extends Controller
             $query->where('issuing_header.issuingh_type', $request->type);
         }
 
-        $rows = $query->orderBy('issuing_header.issuingh_date', 'desc')
-            ->orderBy('issuing_header.issuingh_id', 'desc')
-            ->paginate($request->get('per_page', 25))
-            ->withQueryString();
-
-        $filters = $this->filters($request, ['search', 'type']);
-
-        return view('reports.issuing', compact('rows', 'filters'));
+        return $query;
     }
 
-    public function returning(Request $request): View
+    private function buildReturningQuery(Request $request)
     {
         $query = ReturnDetail::query()
             ->join('return_header', 'return_detail.reth_id', '=', 'return_header.reth_id')
@@ -141,17 +259,10 @@ class ReportController extends Controller
             });
         }
 
-        $rows = $query->orderBy('return_header.reth_date', 'desc')
-            ->orderBy('return_header.reth_id', 'desc')
-            ->paginate($request->get('per_page', 25))
-            ->withQueryString();
-
-        $filters = $this->filters($request, ['search']);
-
-        return view('reports.returning', compact('rows', 'filters'));
+        return $query;
     }
 
-    public function broken(Request $request): View
+    private function buildBrokenQuery(Request $request)
     {
         $query = BrokenDetail::query()
             ->join('broken_header', 'broken_detail.brokh_id', '=', 'broken_header.brokh_id')
@@ -187,17 +298,10 @@ class ReportController extends Controller
             $query->where('broken_header.brokh_status', $request->status);
         }
 
-        $rows = $query->orderBy('broken_header.brokh_date', 'desc')
-            ->orderBy('broken_header.brokh_id', 'desc')
-            ->paginate($request->get('per_page', 25))
-            ->withQueryString();
-
-        $filters = $this->filters($request, ['search', 'status']);
-
-        return view('reports.broken', compact('rows', 'filters'));
+        return $query;
     }
 
-    public function writeOff(Request $request): View
+    private function buildWriteOffQuery(Request $request)
     {
         $query = WriteOffDetail::query()
             ->join('write_off_header', 'write_off_detail.woh_id', '=', 'write_off_header.woh_id')
@@ -227,17 +331,10 @@ class ReportController extends Controller
             });
         }
 
-        $rows = $query->orderBy('write_off_header.woh_date', 'desc')
-            ->orderBy('write_off_header.woh_id', 'desc')
-            ->paginate($request->get('per_page', 25))
-            ->withQueryString();
-
-        $filters = $this->filters($request, ['search']);
-
-        return view('reports.write-off', compact('rows', 'filters'));
+        return $query;
     }
 
-    public function disposal(Request $request): View
+    private function buildDisposalQuery(Request $request)
     {
         $query = DisposalDetail::query()
             ->join('dispossal_header', 'dispossal_detail.disph_id', '=', 'dispossal_header.disph_id')
@@ -270,17 +367,10 @@ class ReportController extends Controller
             });
         }
 
-        $rows = $query->orderBy('dispossal_header.disph_date', 'desc')
-            ->orderBy('dispossal_header.disph_id', 'desc')
-            ->paginate($request->get('per_page', 25))
-            ->withQueryString();
-
-        $filters = $this->filters($request, ['search']);
-
-        return view('reports.disposal', compact('rows', 'filters'));
+        return $query;
     }
 
-    public function position(Request $request): View
+    private function buildPositionQuery(Request $request)
     {
         $query = ItemDetail::query()
             ->join('master_item', 'item_detail.masti_id', '=', 'master_item.masti_id')
@@ -313,18 +403,10 @@ class ReportController extends Controller
             $query->where('item_detail.whsl_id', $request->whsl_id);
         }
 
-        $rows = $query->orderBy('item_detail.itemd_code')
-            ->paginate($request->get('per_page', 25))
-            ->withQueryString();
-
-        $filters = $this->filters($request, ['search', 'whsl_id']);
-
-        $warehouses = Warehouse::orderBy('whsl_code')->get();
-
-        return view('reports.position', compact('rows', 'filters', 'warehouses'));
+        return $query;
     }
 
-    public function aging(Request $request): View
+    private function buildAgingQuery(Request $request)
     {
         $query = ItemDetail::query()
             ->join('master_item', 'item_detail.masti_id', '=', 'master_item.masti_id')
@@ -355,16 +437,10 @@ class ReportController extends Controller
             $this->applyAgingBucket($query, 'item_detail.itemd_acquired_date', $request->aging);
         }
 
-        $rows = $query->orderBy('item_detail.itemd_acquired_date')
-            ->paginate($request->get('per_page', 25))
-            ->withQueryString();
-
-        $filters = $this->filters($request, ['search', 'aging']);
-
-        return view('reports.aging', compact('rows', 'filters'));
+        return $query;
     }
 
-    public function vendor(Request $request): View
+    private function buildVendorQuery(Request $request)
     {
         $query = Customer::query()
             ->where('customer.cust_type', '1')
@@ -382,13 +458,7 @@ class ReportController extends Controller
             });
         }
 
-        $rows = $query->orderBy('customer.cust_code')
-            ->paginate($request->get('per_page', 25))
-            ->withQueryString();
-
-        $filters = $this->filters($request, ['search']);
-
-        return view('reports.vendor', compact('rows', 'filters'));
+        return $query;
     }
 
     private function filters(Request $request, array $keys): array

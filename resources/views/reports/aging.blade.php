@@ -43,6 +43,7 @@
         <div class="card-body">
             @include('reports.partials.filter', [
                 'action' => route('reports.aging'),
+                'reportType' => 'aging',
                 'extra' => '<div class="col-md-2"><select name="aging" class="form-select form-select-sm"><option value="">Semua Aging</option>'.collect($buckets)->map(function($label, $key) use ($filters) { return '<option value="'.$key.'"'.(($filters['aging'] ?? '') === $key ? ' selected' : '').'>'.$label.'</option>'; })->implode('').'</select></div>',
             ])
 

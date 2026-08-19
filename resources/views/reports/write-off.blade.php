@@ -38,7 +38,7 @@
             <h5 class="fw-bold mb-0">Report Write-off Item</h5>
         </div>
         <div class="card-body">
-            @include('reports.partials.filter', ['action' => route('reports.write-off')])
+            @include('reports.partials.filter', ['action' => route('reports.write-off'), 'reportType' => 'write-off'])
 
             <div class="table-responsive">
                 <table id="reportTable" class="table table-hover table-striped align-middle" style="width:100%">

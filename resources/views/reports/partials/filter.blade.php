@@ -18,4 +18,10 @@
     <div class="col-md-1">
         <a href="{{ $action }}" class="btn btn-sm btn-secondary w-100"><i class="bi bi-x-lg"></i></a>
     </div>
+    @can('item.export')
+        <div class="col-md-1">
+            <a href="{{ route('reports.export', array_merge(['report' => $reportType], $filters)) }}"
+                class="btn btn-sm btn-success w-100"><i class="bi bi-download"></i></a>
+        </div>
+    @endcan
 </form>

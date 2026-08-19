@@ -40,6 +40,7 @@
         <div class="card-body">
             @include('reports.partials.filter', [
                 'action' => route('reports.broken'),
+                'reportType' => 'broken',
                 'extra' => '<div class="col-md-2"><select name="status" class="form-select form-select-sm"><option value="">Semua Status</option><option value="0" '.((($filters['status'] ?? '') === '0') ? 'selected' : '').'>Belum</option><option value="1" '.((($filters['status'] ?? '') === '1') ? 'selected' : '').'>Proses</option><option value="2" '.((($filters['status'] ?? '') === '2') ? 'selected' : '').'>Selesai</option></select></div>',
             ])
 
